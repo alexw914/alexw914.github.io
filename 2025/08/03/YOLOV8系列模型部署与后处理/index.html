@@ -20,21 +20,30 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"alexw914.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.23.2","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"default"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
 
-    <meta property="og:type" content="website">
-<meta property="og:title" content="Alex Tech Garden">
-<meta property="og:url" content="https://alexw914.github.io/index.html">
+    <meta name="description" content="YOLOv8系列模型后处理方案YOLOv8系列模型是如今工业界使用较多的一些模型, 本文详细描述各类型的输出结构和后处理方案细节。采取的部署方案更偏向边缘端，例如RKNN等，从检测头开始输出，不使用Ultralytics这种常规结构: [1, 4 + num_classes, N]的后处理方案。  目标检测 (YOLOv8) 旋转检测 (YOLOv8-OBB) 关键点 (YOLOv8-Pose)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="YOLOV8系列模型部署与后处理">
+<meta property="og:url" content="https://alexw914.github.io/2025/08/03/YOLOV8%E7%B3%BB%E5%88%97%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%90%8E%E5%A4%84%E7%90%86/index.html">
 <meta property="og:site_name" content="Alex Tech Garden">
+<meta property="og:description" content="YOLOv8系列模型后处理方案YOLOv8系列模型是如今工业界使用较多的一些模型, 本文详细描述各类型的输出结构和后处理方案细节。采取的部署方案更偏向边缘端，例如RKNN等，从检测头开始输出，不使用Ultralytics这种常规结构: [1, 4 + num_classes, N]的后处理方案。  目标检测 (YOLOv8) 旋转检测 (YOLOv8-OBB) 关键点 (YOLOv8-Pose)">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://alexw914.github.io/images/YOLOV8/yolov8det.png">
+<meta property="og:image" content="https://alexw914.github.io/images/YOLOV8/iou.png">
+<meta property="og:image" content="https://alexw914.github.io/images/YOLOV8/yolov8obb.png">
+<meta property="article:published_time" content="2025-08-03T11:25:27.000Z">
+<meta property="article:modified_time" content="2025-08-03T15:11:57.348Z">
+<meta property="article:tag" content="YOLOv8">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://alexw914.github.io/images/YOLOV8/yolov8det.png">
 
 
-<link rel="canonical" href="https://alexw914.github.io/">
+<link rel="canonical" href="https://alexw914.github.io/2025/08/03/YOLOV8%E7%B3%BB%E5%88%97%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%90%8E%E5%A4%84%E7%90%86/">
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":true,"isPost":false,"lang":"zh-CN","comments":"","permalink":"","path":"index.html","title":""}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://alexw914.github.io/2025/08/03/YOLOV8%E7%B3%BB%E5%88%97%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%90%8E%E5%A4%84%E7%90%86/","path":"2025/08/03/YOLOV8系列模型部署与后处理/","title":"YOLOV8系列模型部署与后处理"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Alex Tech Garden</title>
+<title>YOLOV8系列模型部署与后处理 | Alex Tech Garden</title>
   
 
 
@@ -61,7 +70,7 @@
 
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/quicklink/3.0.1/quicklink.umd.js" integrity="sha256-44BednzIpUeQJcY8qtLyarFu0UCCTbgmWOvaoehiFQQ=" crossorigin="anonymous" defer></script>
-  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":3000,"priority":true,"url":"https://alexw914.github.io/"}</script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":3000,"priority":true,"url":"https://alexw914.github.io/2025/08/03/YOLOV8%E7%B3%BB%E5%88%97%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%90%8E%E5%A4%84%E7%90%86/"}</script>
   <script src="/js/third-party/quicklink.js" defer></script>
 
   <noscript>
@@ -87,7 +96,7 @@
 
     <a href="/" class="brand" rel="start">
       <i class="logo-line"></i>
-      <h1 class="site-title">Alex Tech Garden</h1>
+      <p class="site-title">Alex Tech Garden</p>
       <i class="logo-line"></i>
     </a>
       <p class="site-subtitle" itemprop="description">About C++/Python and AI</p>
@@ -114,7 +123,7 @@
   
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -127,6 +136,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#YOLOv8%E7%B3%BB%E5%88%97%E6%A8%A1%E5%9E%8B%E5%90%8E%E5%A4%84%E7%90%86%E6%96%B9%E6%A1%88"><span class="nav-number">1.</span> <span class="nav-text">YOLOv8系列模型后处理方案</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B"><span class="nav-number">1.1.</span> <span class="nav-text">模型部署基本流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81YOLOv8"><span class="nav-number">1.2.</span> <span class="nav-text">一、YOLOv8</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA"><span class="nav-number">1.2.1.</span> <span class="nav-text">输入输出</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8E%E5%A4%84%E7%90%86"><span class="nav-number">1.2.2.</span> <span class="nav-text">后处理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-DFL%E6%A1%86%E8%A7%A3%E7%A0%81"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">1. DFL框解码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E7%B1%BB%E5%88%AB%E9%A2%84%E6%B5%8B"><span class="nav-number">1.2.2.2.</span> <span class="nav-text">2. 类别预测</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-NMS"><span class="nav-number">1.2.2.3.</span> <span class="nav-text">3. NMS</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-%E5%85%B6%E4%BB%96%E5%A4%84%E7%90%86"><span class="nav-number">1.2.2.4.</span> <span class="nav-text">4. 其他处理</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81YOLOv8-OBB-%E6%97%8B%E8%BD%AC%E6%A3%80%E6%B5%8B"><span class="nav-number">1.3.</span> <span class="nav-text">二、YOLOv8-OBB (旋转检测)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA-1"><span class="nav-number">1.3.1.</span> <span class="nav-text">输入输出</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8E%E5%A4%84%E7%90%86-1"><span class="nav-number">1.3.2.</span> <span class="nav-text">后处理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E8%A7%92%E5%BA%A6%E8%AE%A1%E7%AE%97"><span class="nav-number">1.3.2.1.</span> <span class="nav-text">1. 角度计算</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-RotatedNMS"><span class="nav-number">1.3.3.</span> <span class="nav-text">2. RotatedNMS</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E5%85%B6%E4%BB%96%E5%A4%84%E7%90%86"><span class="nav-number">1.3.3.1.</span> <span class="nav-text">3. 其他处理</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81YOLOv8-Pose-%E5%85%B3%E9%94%AE%E7%82%B9%E6%A3%80%E6%B5%8B"><span class="nav-number">1.4.</span> <span class="nav-text">三、YOLOv8-Pose (关键点检测)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA-2"><span class="nav-number">1.4.1.</span> <span class="nav-text">输入输出</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8E%E5%A4%84%E7%90%86-2"><span class="nav-number">1.4.2.</span> <span class="nav-text">后处理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E5%85%B3%E9%94%AE%E7%82%B9%E8%A7%A3%E7%A0%81"><span class="nav-number">1.4.2.1.</span> <span class="nav-text">1. 关键点解码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E5%85%B6%E4%BB%96%E5%A4%84%E7%90%86"><span class="nav-number">1.4.2.2.</span> <span class="nav-text">2. 其他处理</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81YOLOv8-Seg-%E5%AE%9E%E4%BD%93%E5%88%86%E5%89%B2"><span class="nav-number">1.5.</span> <span class="nav-text">四、YOLOv8-Seg (实体分割)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA-3"><span class="nav-number">1.5.1.</span> <span class="nav-text">输入输出</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8E%E5%A4%84%E7%90%86-3"><span class="nav-number">1.5.2.</span> <span class="nav-text">后处理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-mask%E8%BE%93%E5%87%BA%E8%AE%A1%E7%AE%97"><span class="nav-number">1.5.2.1.</span> <span class="nav-text">1. mask输出计算</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E5%85%B6%E4%BB%96%E5%A4%84%E7%90%86-1"><span class="nav-number">1.5.2.2.</span> <span class="nav-text">2. 其他处理</span></a></li></ol></li></ol></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -175,16 +185,17 @@
 
     </div>
 
-    <div class="main-inner index posts-expand">
+    <div class="main-inner post posts-expand">
 
-    
+
+  
 
 
 <div class="post-block">
   
   
 
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://alexw914.github.io/2025/08/03/YOLOV8%E7%B3%BB%E5%88%97%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%90%8E%E5%A4%84%E7%90%86/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -198,13 +209,13 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | Alex Tech Garden">
+      <meta itemprop="name" content="YOLOV8系列模型部署与后处理 | Alex Tech Garden">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/08/03/YOLOV8%E7%B3%BB%E5%88%97%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%90%8E%E5%A4%84%E7%90%86/" class="post-title-link" itemprop="url">YOLOV8系列模型部署与后处理</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          YOLOV8系列模型部署与后处理<a href="https://github.com/alexw914/hexo-blog/tree/main/source/_posts/_posts/YOLOV8%E7%B3%BB%E5%88%97%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%90%8E%E5%A4%84%E7%90%86.md" class="post-edit-link" title="编辑" rel="noopener" target="_blank"><i class="fa fa-pen-nib"></i></a>
+        </h1>
 
         <div class="post-meta-container">
           <div class="post-meta">
@@ -240,8 +251,7 @@
     
     
     
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="YOLOv8系列模型后处理方案"><a href="#YOLOv8系列模型后处理方案" class="headerlink" title="YOLOv8系列模型后处理方案"></a>YOLOv8系列模型后处理方案</h1><p>YOLOv8系列模型是如今工业界使用较多的一些模型, 本文详细描述各类型的输出结构和后处理方案细节。采取的部署方案更偏向边缘端，例如RKNN等，从检测头开始输出，不使用Ultralytics这种常规结构: <code>[1, 4 + num_classes, N]</code>的后处理方案。</p>
+    <div class="post-body" itemprop="articleBody"><h1 id="YOLOv8系列模型后处理方案"><a href="#YOLOv8系列模型后处理方案" class="headerlink" title="YOLOv8系列模型后处理方案"></a>YOLOv8系列模型后处理方案</h1><p>YOLOv8系列模型是如今工业界使用较多的一些模型, 本文详细描述各类型的输出结构和后处理方案细节。采取的部署方案更偏向边缘端，例如RKNN等，从检测头开始输出，不使用Ultralytics这种常规结构: <code>[1, 4 + num_classes, N]</code>的后处理方案。</p>
 <ul>
 <li>目标检测 (YOLOv8)</li>
 <li>旋转检测 (YOLOv8-OBB)</li>
@@ -283,7 +293,6 @@
 <h3 id="输入输出-2"><a href="#输入输出-2" class="headerlink" title="输入输出"></a>输入输出</h3><h3 id="后处理-2"><a href="#后处理-2" class="headerlink" title="后处理"></a>后处理</h3><h4 id="1-关键点解码"><a href="#1-关键点解码" class="headerlink" title="1. 关键点解码"></a>1. 关键点解码</h4><h4 id="2-其他处理"><a href="#2-其他处理" class="headerlink" title="2. 其他处理"></a>2. 其他处理</h4><h2 id="四、YOLOv8-Seg-实体分割"><a href="#四、YOLOv8-Seg-实体分割" class="headerlink" title="四、YOLOv8-Seg (实体分割)"></a>四、YOLOv8-Seg (实体分割)</h2><p>后续补充…</p>
 <h3 id="输入输出-3"><a href="#输入输出-3" class="headerlink" title="输入输出"></a>输入输出</h3><p>部署的输入输出结构如下:</p>
 <h3 id="后处理-3"><a href="#后处理-3" class="headerlink" title="后处理"></a>后处理</h3><h4 id="1-mask输出计算"><a href="#1-mask输出计算" class="headerlink" title="1. mask输出计算"></a>1. mask输出计算</h4><h4 id="2-其他处理-1"><a href="#2-其他处理-1" class="headerlink" title="2. 其他处理"></a>2. 其他处理</h4>
-      
     </div>
 
     
@@ -291,209 +300,25 @@
     
 
     <footer class="post-footer">
-        <div class="post-eof"></div>
-      
+          <div class="post-tags">
+              <a href="/tags/YOLOv8/" rel="tag"># YOLOv8</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/07/19/%E5%8D%9A%E5%AE%A2%E5%88%9B%E5%BB%BA/" rel="prev" title="Github博客创建">
+                  <i class="fa fa-angle-left"></i> Github博客创建
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
     </footer>
   </article>
 </div>
 
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://alexw914.github.io/2025/07/19/%E5%8D%9A%E5%AE%A2%E5%88%9B%E5%BB%BA/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/c33020ba-84ad-4eac-ac1a-2c132ca9d255.gif">
-      <meta itemprop="name" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Alex Tech Garden">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | Alex Tech Garden">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/07/19/%E5%8D%9A%E5%AE%A2%E5%88%9B%E5%BB%BA/" class="post-title-link" itemprop="url">Github博客创建</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2025-07-19 17:31:27" itemprop="dateCreated datePublished" datetime="2025-07-19T17:31:27+08:00">2025-07-19</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-08-03 23:11:57" itemprop="dateModified" datetime="2025-08-03T23:11:57+08:00">2025-08-03</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">前端</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="Hexo-NexT-个人博客部署流程"><a href="#Hexo-NexT-个人博客部署流程" class="headerlink" title="Hexo + NexT 个人博客部署流程"></a>Hexo + NexT 个人博客部署流程</h1><p>使用Hexo+NexT主题，搭建静态网页并部署至github。</p>
-<h2 id="项目介绍"><a href="#项目介绍" class="headerlink" title="项目介绍"></a>项目介绍</h2><ul>
-<li>使用 Hexo 框架管理博客内容，方便写作和生成静态文件</li>
-<li>使用 NexT 主题，界面简洁美观，支持多种功能扩展</li>
-<li>通过 GitHub Pages 实现免费托管和访问</li>
-</ul>
-<h2 id="博客地址展示-环境准备"><a href="#博客地址展示-环境准备" class="headerlink" title="博客地址展示 &amp; 环境准备"></a>博客地址展示 &amp; 环境准备</h2><p><a href="https://alexw914.github.io/">https://alexw914.github.io</a></p>
-<ul>
-<li>Node.js（建议安装最新 LTS 版本）</li>
-<li>Git客户端</li>
-<li>GitHub账号和仓库（仓库名格式为 <code>alexw914.github.io</code>）–替换为你的github用户名</li>
-</ul>
-<h2 id="Hexo生成静态网页并推送至github"><a href="#Hexo生成静态网页并推送至github" class="headerlink" title="Hexo生成静态网页并推送至github"></a>Hexo生成静态网页并推送至github</h2><h3 id="1-安装-Hexo"><a href="#1-安装-Hexo" class="headerlink" title="1. 安装 Hexo"></a>1. 安装 Hexo</h3><figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">npm <span class="keyword">install </span>-g hexo-cli</span><br><span class="line">hexo init hexo-<span class="keyword">blog </span><span class="comment"># 初始化博客项目（在空目录下）</span></span><br><span class="line">cd hexo-<span class="keyword">blog </span>&amp;&amp; npm <span class="keyword">install </span><span class="comment"># 安装依赖</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="2-安装主题并生成静态网页"><a href="#2-安装主题并生成静态网页" class="headerlink" title="2. 安装主题并生成静态网页"></a>2. 安装主题并生成静态网页</h3><p>下载hexo相关主题， 修改hexo-blog&#x2F;_config.yml文件中theme为next</p>
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https:<span class="regexp">//gi</span>thub.com<span class="regexp">/theme-next/</span>hexo-theme-<span class="keyword">next</span> themes/<span class="keyword">next</span> <span class="comment"># 克隆 NexT 主题, 修改配置文件, 编辑</span></span><br></pre></td></tr></table></figure>
-<p>生成静态网页, 预览效果执行hexo server</p>
-<figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo clean &amp; hexo <span class="keyword">generate</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="3-设置推送github"><a href="#3-设置推送github" class="headerlink" title="3. 设置推送github"></a>3. 设置推送github</h3><p>修改hexo-blog&#x2F;_config.yml中deploy相关内容，并执行hexo deploy</p>
-<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">deploy:</span></span><br><span class="line"><span class="symbol">  type:</span> git</span><br><span class="line"><span class="symbol">  repo:</span> https:<span class="comment">//github.com/alexw914/alexw914.github.io.git</span></span><br><span class="line"><span class="symbol">  branch:</span> main </span><br></pre></td></tr></table></figure>
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://alexw914.github.io/2025/07/19/%E5%B7%A5%E5%85%B7%E5%88%86%E4%BA%ABMockServer/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/c33020ba-84ad-4eac-ac1a-2c132ca9d255.gif">
-      <meta itemprop="name" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Alex Tech Garden">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | Alex Tech Garden">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/07/19/%E5%B7%A5%E5%85%B7%E5%88%86%E4%BA%ABMockServer/" class="post-title-link" itemprop="url">工具分享MockServer</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2025-07-19 17:31:27" itemprop="dateCreated datePublished" datetime="2025-07-19T17:31:27+08:00">2025-07-19</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-08-03 23:11:57" itemprop="dateModified" datetime="2025-08-03T23:11:57+08:00">2025-08-03</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index"><span itemprop="name">工具</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="MockServer"><a href="#MockServer" class="headerlink" title="MockServer"></a><a target="_blank" rel="noopener" href="https://github.com/mock-server/mockserver">MockServer</a></h1><p>MockServer可用于建立模拟http&#x2F;https请求响应的服务器，用于接口调试，可接受任意http请求，返回自定义内容。</p>
-<p><a target="_blank" rel="noopener" href="https://www.mock-server.com/where/docker.html">docker快速案例</a></p>
-<h3 id="1-安装docker"><a href="#1-安装docker" class="headerlink" title="1. 安装docker"></a>1. 安装docker</h3><h3 id="2-拉取镜像"><a href="#2-拉取镜像" class="headerlink" title="2. 拉取镜像"></a>2. 拉取镜像</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull mockserver/mockserver</span><br></pre></td></tr></table></figure>
-<h2 id="3-配置文件准备"><a href="#3-配置文件准备" class="headerlink" title="3. 配置文件准备"></a>3. 配置文件准备</h2><p>   需要准备一个mockeserver.properties和一个initializerJson.json文件：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">touch</span> mockeserver.properties initializerJson.json</span><br></pre></td></tr></table></figure>
-<p>   mockeserver.properties具体内容参考<a target="_blank" rel="noopener" href="https://www.mock-server.com/mock_server/configuration_properties.html">链接</a>, 这里只需要添加以下内容，并在initializerJson.json定义接口形式即可：</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">mockeserver<span class="selector-class">.properties</span>:</span><br><span class="line">   mockserver.initializationJsonPath=/config/initializerJson.json</span><br><span class="line"></span><br><span class="line">initializerJson.json:</span><br><span class="line">[</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;httpRequest&quot;: &#123;</span><br><span class="line">        &quot;<span class="selector-tag">path</span>&quot;: <span class="string">&quot;/data/static/sync_data&quot;</span>      // 接口url定义</span><br><span class="line">      &#125;,</span><br><span class="line">      &quot;httpResponse&quot;: &#123;                       // 返回形式</span><br><span class="line">        &quot;<span class="selector-tag">body</span>&quot;: &#123;</span><br><span class="line">            &quot;<span class="selector-tag">code</span>&quot;: <span class="number">0</span>,</span><br><span class="line">            <span class="string">&quot;errmsg&quot;</span>: <span class="string">&quot;OK&quot;</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;httpRequest&quot;: &#123;</span><br><span class="line">        &quot;<span class="selector-tag">path</span>&quot;: <span class="string">&quot;/status&quot;</span>                     // 定义多个url</span><br><span class="line">      &#125;,</span><br><span class="line">      &quot;httpResponse&quot;: &#123;</span><br><span class="line">        &quot;<span class="selector-tag">body</span>&quot;: &#123;</span><br><span class="line">            &quot;<span class="selector-tag">code</span>&quot;: <span class="number">0</span>,</span><br><span class="line">            <span class="string">&quot;errmsg&quot;</span>: <span class="string">&quot;OK&quot;</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
-<h2 id="4-启动镜像"><a href="#4-启动镜像" class="headerlink" title="4. 启动镜像"></a>4. 启动镜像</h2><p>   定义完毕后，启动如下命令:</p>
-<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="keyword">run</span><span class="language-bash"> -d --<span class="built_in">rm</span> --name mock -v $(<span class="built_in">pwd</span>):/config -p 7535:7535  mockserver/mockserver -serverPort 7535</span></span><br></pre></td></tr></table></figure>
-<p>   –name用于定义启动镜像名称, 这里定义为mock方便启动和查看日志, -v表示映射某一文件夹到镜像某一位置，-p表示端口映射, mockserver&#x2F;mockserver代表启动服务。<br>   启动完成后, 使用postman或其他形式调用接口，并可在日志中查看内容</p>
-<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">docker logs -f mock</span></span><br></pre></td></tr></table></figure>
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
 
 
 
