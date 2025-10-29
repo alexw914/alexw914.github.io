@@ -20,26 +20,28 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"alexw914.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.23.2","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"default"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
 
-    <meta name="description" content="Hexo + NexT 个人博客部署流程使用Hexo+NexT主题，搭建静态网页并部署至github。 项目介绍 使用 Hexo 框架管理博客内容，方便写作和生成静态文件 使用 NexT 主题，界面简洁美观，支持多种功能扩展 通过 GitHub Pages 实现免费托管和访问  博客地址展示 &amp; 环境准备https:&#x2F;&#x2F;alexw914.github.io  Node.js（建议安装最新">
+    <meta name="description" content="⚙️  Zsh 环境配置指南本指南介绍如何在系统上配置现代化终端环境，包含：  安装 Zsh  安装 Oh My Zsh  安装主题 Powerlevel10k  安装 命令自动补全 与 语法高亮 效果如下：  本教程使用国内源    📦 1. 安装 Zsh并设置更新系统并安装 Zsh： 12sudo apt updatesudo apt install -y zsh git curl  验证是">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Github博客创建">
-<meta property="og:url" content="https://alexw914.github.io/2025/07/19/%E5%8D%9A%E5%AE%A2%E5%88%9B%E5%BB%BA/index.html">
+<meta property="og:title" content="Zsh 环境配置指南">
+<meta property="og:url" content="https://alexw914.github.io/2025/10/29/zsh%E7%BB%88%E7%AB%AF%E4%B8%BB%E9%A2%98%E4%B8%8E%E8%87%AA%E5%8A%A8%E8%A1%A5%E5%85%A8/index.html">
 <meta property="og:site_name" content="Alex Tech Garden">
-<meta property="og:description" content="Hexo + NexT 个人博客部署流程使用Hexo+NexT主题，搭建静态网页并部署至github。 项目介绍 使用 Hexo 框架管理博客内容，方便写作和生成静态文件 使用 NexT 主题，界面简洁美观，支持多种功能扩展 通过 GitHub Pages 实现免费托管和访问  博客地址展示 &amp; 环境准备https:&#x2F;&#x2F;alexw914.github.io  Node.js（建议安装最新">
+<meta property="og:description" content="⚙️  Zsh 环境配置指南本指南介绍如何在系统上配置现代化终端环境，包含：  安装 Zsh  安装 Oh My Zsh  安装主题 Powerlevel10k  安装 命令自动补全 与 语法高亮 效果如下：  本教程使用国内源    📦 1. 安装 Zsh并设置更新系统并安装 Zsh： 12sudo apt updatesudo apt install -y zsh git curl  验证是">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2025-07-19T09:31:27.000Z">
+<meta property="og:image" content="https://alexw914.github.io/images/zsh/zsh.png">
+<meta property="article:published_time" content="2025-10-29T11:25:27.000Z">
 <meta property="article:modified_time" content="2025-10-29T15:34:03.036Z">
-<meta property="article:tag" content="git">
+<meta property="article:tag" content="linux">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://alexw914.github.io/images/zsh/zsh.png">
 
 
-<link rel="canonical" href="https://alexw914.github.io/2025/07/19/%E5%8D%9A%E5%AE%A2%E5%88%9B%E5%BB%BA/">
+<link rel="canonical" href="https://alexw914.github.io/2025/10/29/zsh%E7%BB%88%E7%AB%AF%E4%B8%BB%E9%A2%98%E4%B8%8E%E8%87%AA%E5%8A%A8%E8%A1%A5%E5%85%A8/">
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://alexw914.github.io/2025/07/19/%E5%8D%9A%E5%AE%A2%E5%88%9B%E5%BB%BA/","path":"2025/07/19/博客创建/","title":"Github博客创建"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://alexw914.github.io/2025/10/29/zsh%E7%BB%88%E7%AB%AF%E4%B8%BB%E9%A2%98%E4%B8%8E%E8%87%AA%E5%8A%A8%E8%A1%A5%E5%85%A8/","path":"2025/10/29/zsh终端主题与自动补全/","title":"Zsh 环境配置指南"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Github博客创建 | Alex Tech Garden</title>
+<title>Zsh 环境配置指南 | Alex Tech Garden</title>
   
 
 
@@ -66,7 +68,7 @@
 
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/quicklink/3.0.1/quicklink.umd.js" integrity="sha256-44BednzIpUeQJcY8qtLyarFu0UCCTbgmWOvaoehiFQQ=" crossorigin="anonymous" defer></script>
-  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":3000,"priority":true,"url":"https://alexw914.github.io/2025/07/19/%E5%8D%9A%E5%AE%A2%E5%88%9B%E5%BB%BA/"}</script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":3000,"priority":true,"url":"https://alexw914.github.io/2025/10/29/zsh%E7%BB%88%E7%AB%AF%E4%B8%BB%E9%A2%98%E4%B8%8E%E8%87%AA%E5%8A%A8%E8%A1%A5%E5%85%A8/"}</script>
   <script src="/js/third-party/quicklink.js" defer></script>
 
   <noscript>
@@ -132,7 +134,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Hexo-NexT-%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E9%83%A8%E7%BD%B2%E6%B5%81%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text">Hexo + NexT 个人博客部署流程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.1.</span> <span class="nav-text">项目介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%9A%E5%AE%A2%E5%9C%B0%E5%9D%80%E5%B1%95%E7%A4%BA-%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"><span class="nav-number">1.2.</span> <span class="nav-text">博客地址展示 &amp; 环境准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hexo%E7%94%9F%E6%88%90%E9%9D%99%E6%80%81%E7%BD%91%E9%A1%B5%E5%B9%B6%E6%8E%A8%E9%80%81%E8%87%B3github"><span class="nav-number">1.3.</span> <span class="nav-text">Hexo生成静态网页并推送至github</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%AE%89%E8%A3%85-Hexo"><span class="nav-number">1.3.1.</span> <span class="nav-text">1. 安装 Hexo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%AE%89%E8%A3%85%E4%B8%BB%E9%A2%98%E5%B9%B6%E7%94%9F%E6%88%90%E9%9D%99%E6%80%81%E7%BD%91%E9%A1%B5"><span class="nav-number">1.3.2.</span> <span class="nav-text">2. 安装主题并生成静态网页</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E8%AE%BE%E7%BD%AE%E6%8E%A8%E9%80%81github"><span class="nav-number">1.3.3.</span> <span class="nav-text">3. 设置推送github</span></a></li></ol></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E2%9A%99%EF%B8%8F-Zsh-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8D%97"><span class="nav-number">1.</span> <span class="nav-text">⚙️  Zsh 环境配置指南</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%93%A6-1-%E5%AE%89%E8%A3%85-Zsh%E5%B9%B6%E8%AE%BE%E7%BD%AE"><span class="nav-number">1.1.</span> <span class="nav-text">📦 1. 安装 Zsh并设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%93%A6-2-%E5%AE%89%E8%A3%85-Oh-My-Zsh"><span class="nav-number">1.2.</span> <span class="nav-text">📦 2. 安装 Oh My Zsh</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%93%A6-3-%E5%AE%89%E8%A3%85-PowerLevel10K%E4%B8%BB%E9%A2%98%E4%B8%8E%E6%8F%92%E4%BB%B6"><span class="nav-number">1.3.</span> <span class="nav-text">📦 3. 安装 PowerLevel10K主题与插件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%93%A6-4-%E8%A1%A5%E5%85%85"><span class="nav-number">1.4.</span> <span class="nav-text">📦 4. 补充</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -192,7 +194,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://alexw914.github.io/2025/07/19/%E5%8D%9A%E5%AE%A2%E5%88%9B%E5%BB%BA/">
+    <link itemprop="mainEntityOfPage" href="https://alexw914.github.io/2025/10/29/zsh%E7%BB%88%E7%AB%AF%E4%B8%BB%E9%A2%98%E4%B8%8E%E8%87%AA%E5%8A%A8%E8%A1%A5%E5%85%A8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/c33020ba-84ad-4eac-ac1a-2c132ca9d255.gif">
@@ -205,12 +207,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="Github博客创建 | Alex Tech Garden">
+      <meta itemprop="name" content="Zsh 环境配置指南 | Alex Tech Garden">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Github博客创建<a href="https://github.com/alexw914/hexo-blog/tree/main/source/_posts/_posts/%E5%8D%9A%E5%AE%A2%E5%88%9B%E5%BB%BA.md" class="post-edit-link" title="编辑" rel="noopener" target="_blank"><i class="fa fa-pen-nib"></i></a>
+          Zsh 环境配置指南<a href="https://github.com/alexw914/hexo-blog/tree/main/source/_posts/_posts/zsh%E7%BB%88%E7%AB%AF%E4%B8%BB%E9%A2%98%E4%B8%8E%E8%87%AA%E5%8A%A8%E8%A1%A5%E5%85%A8.md" class="post-edit-link" title="编辑" rel="noopener" target="_blank"><i class="fa fa-pen-nib"></i></a>
         </h1>
 
         <div class="post-meta-container">
@@ -220,15 +222,9 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
+      
 
-      <time title="创建时间：2025-07-19 17:31:27" itemprop="dateCreated datePublished" datetime="2025-07-19T17:31:27+08:00">2025-07-19</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-10-29 23:34:03" itemprop="dateModified" datetime="2025-10-29T23:34:03+08:00">2025-10-29</time>
+      <time title="创建时间：2025-10-29 19:25:27 / 修改时间：23:34:03" itemprop="dateCreated datePublished" datetime="2025-10-29T19:25:27+08:00">2025-10-29</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -236,7 +232,7 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">前端</span></a>
+          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
         </span>
     </span>
 
@@ -249,27 +245,55 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h1 id="Hexo-NexT-个人博客部署流程"><a href="#Hexo-NexT-个人博客部署流程" class="headerlink" title="Hexo + NexT 个人博客部署流程"></a>Hexo + NexT 个人博客部署流程</h1><p>使用Hexo+NexT主题，搭建静态网页并部署至github。</p>
-<h2 id="项目介绍"><a href="#项目介绍" class="headerlink" title="项目介绍"></a>项目介绍</h2><ul>
-<li>使用 Hexo 框架管理博客内容，方便写作和生成静态文件</li>
-<li>使用 NexT 主题，界面简洁美观，支持多种功能扩展</li>
-<li>通过 GitHub Pages 实现免费托管和访问</li>
-</ul>
-<h2 id="博客地址展示-环境准备"><a href="#博客地址展示-环境准备" class="headerlink" title="博客地址展示 &amp; 环境准备"></a>博客地址展示 &amp; 环境准备</h2><p><a href="https://alexw914.github.io/">https://alexw914.github.io</a></p>
+    <div class="post-body" itemprop="articleBody"><h1 id="⚙️-Zsh-环境配置指南"><a href="#⚙️-Zsh-环境配置指南" class="headerlink" title="⚙️  Zsh 环境配置指南"></a>⚙️  Zsh 环境配置指南</h1><p>本指南介绍如何在系统上配置现代化终端环境，包含：</p>
 <ul>
-<li>Node.js（建议安装最新 LTS 版本）</li>
-<li>Git客户端</li>
-<li>GitHub账号和仓库（仓库名格式为 <code>alexw914.github.io</code>）–替换为你的github用户名</li>
+<li><p>安装 <strong>Zsh</strong></p>
+</li>
+<li><p>安装 <strong>Oh My Zsh</strong></p>
+</li>
+<li><p>安装主题 <strong>Powerlevel10k</strong></p>
+</li>
+<li><p>安装 <strong>命令自动补全</strong> 与 <strong>语法高亮</strong></p>
+<p>效果如下：</p>
+<p><img src="/images/zsh/zsh.png" alt="zsh"></p>
+<p>本教程使用国内源</p>
+</li>
 </ul>
-<h2 id="Hexo生成静态网页并推送至github"><a href="#Hexo生成静态网页并推送至github" class="headerlink" title="Hexo生成静态网页并推送至github"></a>Hexo生成静态网页并推送至github</h2><h3 id="1-安装-Hexo"><a href="#1-安装-Hexo" class="headerlink" title="1. 安装 Hexo"></a>1. 安装 Hexo</h3><figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">npm <span class="keyword">install </span>-g hexo-cli</span><br><span class="line">hexo init hexo-<span class="keyword">blog </span><span class="comment"># 初始化博客项目（在空目录下）</span></span><br><span class="line">cd hexo-<span class="keyword">blog </span>&amp;&amp; npm <span class="keyword">install </span><span class="comment"># 安装依赖</span></span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="📦-1-安装-Zsh并设置"><a href="#📦-1-安装-Zsh并设置" class="headerlink" title="📦 1. 安装 Zsh并设置"></a>📦 1. 安装 Zsh并设置</h2><p>更新系统并安装 Zsh：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt update</span><br><span class="line"><span class="built_in">sudo</span> apt install -y zsh git curl</span><br></pre></td></tr></table></figure>
 
-<h3 id="2-安装主题并生成静态网页"><a href="#2-安装主题并生成静态网页" class="headerlink" title="2. 安装主题并生成静态网页"></a>2. 安装主题并生成静态网页</h3><p>下载hexo相关主题， 修改hexo-blog&#x2F;_config.yml文件中theme为next</p>
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https:<span class="regexp">//gi</span>thub.com<span class="regexp">/theme-next/</span>hexo-theme-<span class="keyword">next</span> themes/<span class="keyword">next</span> <span class="comment"># 克隆 NexT 主题, 修改配置文件, 编辑</span></span><br></pre></td></tr></table></figure>
-<p>生成静态网页, 预览效果执行hexo server</p>
-<figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo clean &amp; hexo <span class="keyword">generate</span></span><br></pre></td></tr></table></figure>
+<p>验证是否安装成功</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">zsh --version</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">zsh 5.9 (aarch64-unknown-linux-gnu)</span></span><br></pre></td></tr></table></figure>
 
-<h3 id="3-设置推送github"><a href="#3-设置推送github" class="headerlink" title="3. 设置推送github"></a>3. 设置推送github</h3><p>修改hexo-blog&#x2F;_config.yml中deploy相关内容，并执行hexo deploy</p>
-<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">deploy:</span></span><br><span class="line"><span class="symbol">  type:</span> git</span><br><span class="line"><span class="symbol">  repo:</span> https:<span class="comment">//github.com/alexw914/alexw914.github.io.git</span></span><br><span class="line"><span class="symbol">  branch:</span> main </span><br></pre></td></tr></table></figure>
+<p>设置 Zsh 为默认 Shell，并注销重启终端</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chsh -s $(which zsh)</span><br></pre></td></tr></table></figure>
+
+<h2 id="📦-2-安装-Oh-My-Zsh"><a href="#📦-2-安装-Oh-My-Zsh" class="headerlink" title="📦 2. 安装 Oh My Zsh"></a>📦 2. 安装 Oh My Zsh</h2><p>Oh My Zsh 是基于 zsh 命令行的一个扩展工具集，提供了丰富的扩展功能。</p>
+<p>通过 curl 安装：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">export REMOTE=https://gitee.com/mirrors/oh-my-zsh.git /</span><br><span class="line">export ZSH=&quot;$HOME/.oh-my-zsh&quot; /</span><br><span class="line">git clone --depth=1 $REMOTE $ZSH /</span><br><span class="line">cp $ZSH/templates/zshrc.zsh-template ~/.zshrc</span><br></pre></td></tr></table></figure>
+
+<h2 id="📦-3-安装-PowerLevel10K主题与插件"><a href="#📦-3-安装-PowerLevel10K主题与插件" class="headerlink" title="📦 3. 安装 PowerLevel10K主题与插件"></a>📦 3. 安装 PowerLevel10K主题与插件</h2><p>安装p10k主题</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone --depth=1 https://gitee.com/wulkha/powerlevel10k.git $&#123;ZSH_CUSTOM:-~/.oh-my-zsh/custom&#125;/themes/powerlevel10k</span><br></pre></td></tr></table></figure>
+
+<p>安装命令自动补全插件 (zsh-autosuggestions)</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://gitee.com/wulkha/zsh-autosuggestions.git $&#123;ZSH_CUSTOM:-~/.oh-my-zsh/custom&#125;/plugins/zsh-autosuggestions</span><br></pre></td></tr></table></figure>
+
+<p>安装语法高亮插件 (zsh-syntax-highlighting)</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://gitee.com/wulkha/zsh-syntax-highlighting.git $&#123;ZSH_CUSTOM:-~/.oh-my-zsh/custom&#125;/plugins/zsh-syntax-highlighting</span><br></pre></td></tr></table></figure>
+
+<p>所有下载完成后，编辑~&#x2F;.zshrc，修改以下两个</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ZSH_THEME=&quot;powerlevel10k/powerlevel10k&quot;</span><br><span class="line">plugins=(git zsh-autosuggestions zsh-syntax-highlighting)</span><br></pre></td></tr></table></figure>
+
+<p>激活环境</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">source ~/.zshrc</span><br></pre></td></tr></table></figure>
+
+<h2 id="📦-4-补充"><a href="#📦-4-补充" class="headerlink" title="📦 4. 补充"></a>📦 4. 补充</h2><p>powerlevel10k主题会在第一次启动配置，若后期想更改，可以执行以下命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">p10k configure</span><br></pre></td></tr></table></figure>
+
+<p>若遇到显示不全，需要下载Nerd Fonts字体，远程连接，需要配置终端字体，下载即可</p>
+<p><a href="/images/zsh/MesloLGS%20NF%20Regular.ttf">点击下载 MesloLGS NF Regular.ttf</a></p>
+
     </div>
 
     
@@ -278,20 +302,20 @@
 
     <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/git/" rel="tag"># git</a>
+              <a href="/tags/linux/" rel="tag"># linux</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2025/07/19/%E5%B7%A5%E5%85%B7%E5%88%86%E4%BA%ABMockServer/" rel="prev" title="工具分享MockServer">
-                  <i class="fa fa-angle-left"></i> 工具分享MockServer
+                <a href="/2025/08/03/YOLOV8%E7%B3%BB%E5%88%97%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%90%8E%E5%A4%84%E7%90%86/" rel="prev" title="YOLOV8系列模型部署与后处理">
+                  <i class="fa fa-angle-left"></i> YOLOV8系列模型部署与后处理
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2025/08/03/YOLOV8%E7%B3%BB%E5%88%97%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%90%8E%E5%A4%84%E7%90%86/" rel="next" title="YOLOV8系列模型部署与后处理">
-                  YOLOV8系列模型部署与后处理 <i class="fa fa-angle-right"></i>
+                <a href="/2025/10/29/%E7%AE%97%E6%B3%95%E5%88%B7%E9%A2%98/" rel="next" title="">
+                   <i class="fa fa-angle-right"></i>
                 </a>
             </div>
           </div>
