@@ -20,21 +20,26 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"alexw914.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.23.2","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"default"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
 
-    <meta property="og:type" content="website">
-<meta property="og:title" content="Alex Tech Garden">
-<meta property="og:url" content="https://alexw914.github.io/index.html">
+    <meta name="description" content="🧮 算法基础本笔记总结了常见算法与数据结构的基础知识与典型题目，适合用于复习与面试准备。  一、数组与链表1. 排序📘 复杂度与应用场景   算法 平均复杂度 最坏复杂度 稳定性 适用场景    冒泡排序 O(n²) O(n²) ✅ 数据量小、稳定性要求高   选择排序 O(n²) O(n²) ❌ 数据量小，交换次数少   插入排序 O(n²) O(n²) ✅ 基本有序数组   希尔排序 O(">
+<meta property="og:type" content="article">
+<meta property="og:title" content="算法刷题">
+<meta property="og:url" content="https://alexw914.github.io/2025/11/21/%E7%AE%97%E6%B3%95%E5%88%B7%E9%A2%98/index.html">
 <meta property="og:site_name" content="Alex Tech Garden">
+<meta property="og:description" content="🧮 算法基础本笔记总结了常见算法与数据结构的基础知识与典型题目，适合用于复习与面试准备。  一、数组与链表1. 排序📘 复杂度与应用场景   算法 平均复杂度 最坏复杂度 稳定性 适用场景    冒泡排序 O(n²) O(n²) ✅ 数据量小、稳定性要求高   选择排序 O(n²) O(n²) ❌ 数据量小，交换次数少   插入排序 O(n²) O(n²) ✅ 基本有序数组   希尔排序 O(">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-11-21T09:31:27.000Z">
+<meta property="article:modified_time" content="2025-11-20T17:16:20.093Z">
+<meta property="article:tag" content="leetcode">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://alexw914.github.io/">
+<link rel="canonical" href="https://alexw914.github.io/2025/11/21/%E7%AE%97%E6%B3%95%E5%88%B7%E9%A2%98/">
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":true,"isPost":false,"lang":"zh-CN","comments":"","permalink":"","path":"index.html","title":""}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://alexw914.github.io/2025/11/21/%E7%AE%97%E6%B3%95%E5%88%B7%E9%A2%98/","path":"2025/11/21/算法刷题/","title":"算法刷题"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Alex Tech Garden</title>
+<title>算法刷题 | Alex Tech Garden</title>
   
 
 
@@ -61,7 +66,7 @@
 
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/quicklink/3.0.1/quicklink.umd.js" integrity="sha256-44BednzIpUeQJcY8qtLyarFu0UCCTbgmWOvaoehiFQQ=" crossorigin="anonymous" defer></script>
-  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":3000,"priority":true,"url":"https://alexw914.github.io/"}</script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":3000,"priority":true,"url":"https://alexw914.github.io/2025/11/21/%E7%AE%97%E6%B3%95%E5%88%B7%E9%A2%98/"}</script>
   <script src="/js/third-party/quicklink.js" defer></script>
 
   <noscript>
@@ -87,7 +92,7 @@
 
     <a href="/" class="brand" rel="start">
       <i class="logo-line"></i>
-      <h1 class="site-title">Alex Tech Garden</h1>
+      <p class="site-title">Alex Tech Garden</p>
       <i class="logo-line"></i>
     </a>
       <p class="site-subtitle" itemprop="description">About C++/Python and AI</p>
@@ -114,7 +119,7 @@
   
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -127,6 +132,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%F0%9F%A7%AE-%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80"><span class="nav-number">1.</span> <span class="nav-text">🧮 算法基础</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E6%95%B0%E7%BB%84%E4%B8%8E%E9%93%BE%E8%A1%A8"><span class="nav-number">1.1.</span> <span class="nav-text">一、数组与链表</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%8E%92%E5%BA%8F"><span class="nav-number">1.1.1.</span> <span class="nav-text">1. 排序</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%F0%9F%93%98-%E5%A4%8D%E6%9D%82%E5%BA%A6%E4%B8%8E%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">📘 复杂度与应用场景</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%F0%9F%94%B8-%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F-%E5%88%86%E6%B2%BB%E6%80%9D%E6%83%B3%EF%BC%8C%E5%8E%9F%E5%9C%B0%E5%88%92%E5%88%86%EF%BC%8C%E9%80%82%E5%90%88-Top-K%E3%80%81%E6%8E%92%E5%BA%8F%E4%BC%98%E5%8C%96%E7%AD%89"><span class="nav-number">1.1.1.2.</span> <span class="nav-text">🔸 快速排序(分治思想，原地划分，适合 Top-K、排序优化等)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%F0%9F%94%B8-%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F"><span class="nav-number">1.1.1.3.</span> <span class="nav-text">🔸 归并排序</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%8F%8C%E6%8C%87%E9%92%88"><span class="nav-number">1.1.2.</span> <span class="nav-text">2. 双指针</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%F0%9F%9A%80-%E5%BF%AB%E6%85%A2%E6%8C%87%E9%92%88"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">🚀 快慢指针</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E2%9A%96%EF%B8%8F-%E5%B7%A6%E5%8F%B3%E6%8C%87%E9%92%88"><span class="nav-number">1.1.2.2.</span> <span class="nav-text">⚖️ 左右指针</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%89%8D%E7%BC%80%E5%B7%AE%E5%88%86"><span class="nav-number">1.1.3.</span> <span class="nav-text">3. 前缀差分</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E6%A0%88%E4%B8%8E%E9%98%9F%E5%88%97"><span class="nav-number">1.2.</span> <span class="nav-text">二、栈与队列</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E4%BA%8C%E5%8F%89%E6%A0%91"><span class="nav-number">1.3.</span> <span class="nav-text">三、二叉树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81BFS%E4%B8%8EDFS"><span class="nav-number">1.4.</span> <span class="nav-text">四、BFS与DFS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94%E3%80%81%E5%9B%BE%E8%AE%BA"><span class="nav-number">1.5.</span> <span class="nav-text">五、图论</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AD%E3%80%81%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E4%B8%8E%E8%B4%AA%E5%BF%83"><span class="nav-number">1.6.</span> <span class="nav-text">六、动态规划与贪心</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%F0%9F%8E%92-%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98"><span class="nav-number">1.6.1.</span> <span class="nav-text">🎒 背包问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%F0%9F%93%88-%E7%BA%BF%E6%80%A7DP"><span class="nav-number">1.6.2.</span> <span class="nav-text">📈 线性DP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%F0%9F%92%A1-%E8%B4%AA%E5%BF%83%E7%AE%97%E6%B3%95"><span class="nav-number">1.6.3.</span> <span class="nav-text">💡 贪心算法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%83%E3%80%81%E5%85%B6%E4%BB%96%E5%B8%B8%E8%A7%81%E9%A2%98%E5%9E%8B"><span class="nav-number">1.7.</span> <span class="nav-text">七、其他常见题型</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -175,16 +181,17 @@
 
     </div>
 
-    <div class="main-inner index posts-expand">
+    <div class="main-inner post posts-expand">
 
-    
+
+  
 
 
 <div class="post-block">
   
   
 
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://alexw914.github.io/2025/11/21/%E7%AE%97%E6%B3%95%E5%88%B7%E9%A2%98/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -198,13 +205,13 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | Alex Tech Garden">
+      <meta itemprop="name" content="算法刷题 | Alex Tech Garden">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/11/21/%E7%AE%97%E6%B3%95%E5%88%B7%E9%A2%98/" class="post-title-link" itemprop="url">算法刷题</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          算法刷题<a href="https://github.com/alexw914/hexo-blog/tree/main/source/_posts/_posts/%E7%AE%97%E6%B3%95%E5%88%B7%E9%A2%98.md" class="post-edit-link" title="编辑" rel="noopener" target="_blank"><i class="fa fa-pen-nib"></i></a>
+        </h1>
 
         <div class="post-meta-container">
           <div class="post-meta">
@@ -236,8 +243,7 @@
     
     
     
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="🧮-算法基础"><a href="#🧮-算法基础" class="headerlink" title="🧮 算法基础"></a>🧮 算法基础</h1><p>本笔记总结了常见算法与数据结构的基础知识与典型题目，适合用于复习与面试准备。</p>
+    <div class="post-body" itemprop="articleBody"><h1 id="🧮-算法基础"><a href="#🧮-算法基础" class="headerlink" title="🧮 算法基础"></a>🧮 算法基础</h1><p>本笔记总结了常见算法与数据结构的基础知识与典型题目，适合用于复习与面试准备。</p>
 <hr>
 <h2 id="一、数组与链表"><a href="#一、数组与链表" class="headerlink" title="一、数组与链表"></a>一、数组与链表</h2><h3 id="1-排序"><a href="#1-排序" class="headerlink" title="1. 排序"></a>1. 排序</h3><h4 id="📘-复杂度与应用场景"><a href="#📘-复杂度与应用场景" class="headerlink" title="📘 复杂度与应用场景"></a>📘 复杂度与应用场景</h4><table>
 <thead>
@@ -580,7 +586,6 @@
 </li>
 </ol>
 
-      
     </div>
 
     
@@ -588,476 +593,25 @@
     
 
     <footer class="post-footer">
-        <div class="post-eof"></div>
-      
+          <div class="post-tags">
+              <a href="/tags/leetcode/" rel="tag"># leetcode</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/10/29/zsh%E7%BB%88%E7%AB%AF%E4%B8%BB%E9%A2%98%E4%B8%8E%E8%87%AA%E5%8A%A8%E8%A1%A5%E5%85%A8/" rel="prev" title="Zsh 环境配置指南">
+                  <i class="fa fa-angle-left"></i> Zsh 环境配置指南
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
     </footer>
   </article>
 </div>
 
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://alexw914.github.io/2025/10/29/zsh%E7%BB%88%E7%AB%AF%E4%B8%BB%E9%A2%98%E4%B8%8E%E8%87%AA%E5%8A%A8%E8%A1%A5%E5%85%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/c33020ba-84ad-4eac-ac1a-2c132ca9d255.gif">
-      <meta itemprop="name" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Alex Tech Garden">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | Alex Tech Garden">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/10/29/zsh%E7%BB%88%E7%AB%AF%E4%B8%BB%E9%A2%98%E4%B8%8E%E8%87%AA%E5%8A%A8%E8%A1%A5%E5%85%A8/" class="post-title-link" itemprop="url">Zsh 环境配置指南</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2025-10-29 19:25:27" itemprop="dateCreated datePublished" datetime="2025-10-29T19:25:27+08:00">2025-10-29</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-11-21 01:16:20" itemprop="dateModified" datetime="2025-11-21T01:16:20+08:00">2025-11-21</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="⚙️-Zsh-环境配置指南"><a href="#⚙️-Zsh-环境配置指南" class="headerlink" title="⚙️  Zsh 环境配置指南"></a>⚙️  Zsh 环境配置指南</h1><p>本指南介绍如何在系统上配置现代化终端环境，包含：</p>
-<ul>
-<li><p>安装 <strong>Zsh</strong></p>
-</li>
-<li><p>安装 <strong>Oh My Zsh</strong></p>
-</li>
-<li><p>安装主题 <strong>Powerlevel10k</strong></p>
-</li>
-<li><p>安装 <strong>命令自动补全</strong> 与 <strong>语法高亮</strong></p>
-<p>效果如下：</p>
-<p><img src="/images/zsh/zsh.png" alt="zsh"></p>
-<p>本教程使用国内源</p>
-</li>
-</ul>
-<hr>
-<h2 id="📦-1-安装-Zsh并设置"><a href="#📦-1-安装-Zsh并设置" class="headerlink" title="📦 1. 安装 Zsh并设置"></a>📦 1. 安装 Zsh并设置</h2><p>更新系统并安装 Zsh：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt update</span><br><span class="line"><span class="built_in">sudo</span> apt install -y zsh git curl</span><br></pre></td></tr></table></figure>
-
-<p>验证是否安装成功</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">zsh --version</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">zsh 5.9 (aarch64-unknown-linux-gnu)</span></span><br></pre></td></tr></table></figure>
-
-<p>设置 Zsh 为默认 Shell，并注销重启终端</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chsh -s $(which zsh)</span><br></pre></td></tr></table></figure>
-
-<h2 id="📦-2-安装-Oh-My-Zsh"><a href="#📦-2-安装-Oh-My-Zsh" class="headerlink" title="📦 2. 安装 Oh My Zsh"></a>📦 2. 安装 Oh My Zsh</h2><p>Oh My Zsh 是基于 zsh 命令行的一个扩展工具集，提供了丰富的扩展功能。</p>
-<p>通过 curl 安装：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">export REMOTE=https://gitee.com/mirrors/oh-my-zsh.git /</span><br><span class="line">export ZSH=&quot;$HOME/.oh-my-zsh&quot; /</span><br><span class="line">git clone --depth=1 $REMOTE $ZSH /</span><br><span class="line">cp $ZSH/templates/zshrc.zsh-template ~/.zshrc</span><br></pre></td></tr></table></figure>
-
-<h2 id="📦-3-安装-PowerLevel10K主题与插件"><a href="#📦-3-安装-PowerLevel10K主题与插件" class="headerlink" title="📦 3. 安装 PowerLevel10K主题与插件"></a>📦 3. 安装 PowerLevel10K主题与插件</h2><p>安装p10k主题</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone --depth=1 https://gitee.com/wulkha/powerlevel10k.git $&#123;ZSH_CUSTOM:-~/.oh-my-zsh/custom&#125;/themes/powerlevel10k</span><br></pre></td></tr></table></figure>
-
-<p>安装命令自动补全插件 (zsh-autosuggestions)</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://gitee.com/wulkha/zsh-autosuggestions.git $&#123;ZSH_CUSTOM:-~/.oh-my-zsh/custom&#125;/plugins/zsh-autosuggestions</span><br></pre></td></tr></table></figure>
-
-<p>安装语法高亮插件 (zsh-syntax-highlighting)</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://gitee.com/wulkha/zsh-syntax-highlighting.git $&#123;ZSH_CUSTOM:-~/.oh-my-zsh/custom&#125;/plugins/zsh-syntax-highlighting</span><br></pre></td></tr></table></figure>
-
-<p>所有下载完成后，编辑~&#x2F;.zshrc，修改以下两个</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ZSH_THEME=&quot;powerlevel10k/powerlevel10k&quot;</span><br><span class="line">plugins=(git zsh-autosuggestions zsh-syntax-highlighting)</span><br></pre></td></tr></table></figure>
-
-<p>激活环境</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">source ~/.zshrc</span><br></pre></td></tr></table></figure>
-
-<h2 id="📦-4-补充"><a href="#📦-4-补充" class="headerlink" title="📦 4. 补充"></a>📦 4. 补充</h2><p>powerlevel10k主题会在第一次启动配置，若后期想更改，可以执行以下命令</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">p10k configure</span><br></pre></td></tr></table></figure>
-
-<p>若遇到显示不全，需要下载Nerd Fonts字体，远程连接，需要配置终端字体，下载即可</p>
-<p><a href="/images/zsh/MesloLGS%20NF%20Regular.ttf">点击下载 MesloLGS NF Regular.ttf</a></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://alexw914.github.io/2025/08/03/YOLOV8%E7%B3%BB%E5%88%97%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%90%8E%E5%A4%84%E7%90%86/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/c33020ba-84ad-4eac-ac1a-2c132ca9d255.gif">
-      <meta itemprop="name" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Alex Tech Garden">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | Alex Tech Garden">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/08/03/YOLOV8%E7%B3%BB%E5%88%97%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%90%8E%E5%A4%84%E7%90%86/" class="post-title-link" itemprop="url">YOLOV8系列模型部署与后处理</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2025-08-03 19:25:27" itemprop="dateCreated datePublished" datetime="2025-08-03T19:25:27+08:00">2025-08-03</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-11-21 01:16:20" itemprop="dateModified" datetime="2025-11-21T01:16:20+08:00">2025-11-21</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">深度学习</span></a>
-        </span>
-          ，
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2/" itemprop="url" rel="index"><span itemprop="name">模型部署</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="YOLOv8系列模型后处理方案"><a href="#YOLOv8系列模型后处理方案" class="headerlink" title="YOLOv8系列模型后处理方案"></a>YOLOv8系列模型后处理方案</h1><p>YOLOv8系列模型是如今工业界使用较多的一些模型, 本文详细描述各类型的输出结构和后处理方案细节。采取的部署方案更偏向边缘端，例如RKNN等，从检测头开始输出，不使用Ultralytics这种常规结构: [1, 4+num_classes, N]的后处理方案。</p>
-<ul>
-<li>目标检测 (YOLOv8)</li>
-<li>旋转检测 (YOLOv8-OBB)</li>
-<li>关键点 (YOLOv8-Pose)</li>
-<li>实例分割 (YOLOv8-Seg)</li>
-</ul>
-<h2 id="模型部署基本流程"><a href="#模型部署基本流程" class="headerlink" title="模型部署基本流程"></a>模型部署基本流程</h2><p>模型推理大都经过以下过程</p>
-<ol>
-<li>预处理Resize、Normalize等， 例如一些Letterbox、归一化(通常为除以255)等，组织图片为需要的输入数据。</li>
-<li>模型推理，可以是ONNX、RKNN、TensorRT等模型，API有所不同、输入也有可能不同(主要是NCHW与NHWC之间的区别)，就是把步骤1获得的图片输入进模型，得到输出。</li>
-<li>输出后处理，对模型输出进行进一步处理、例如DFL、NMS等内容(一些模型可以通过量化、算子合并与拆分来实现模型的精度与速度平衡，会涉及后处理的变动)。</li>
-</ol>
-<h2 id="一、YOLOv8"><a href="#一、YOLOv8" class="headerlink" title="一、YOLOv8"></a>一、YOLOv8</h2><h3 id="输入输出"><a href="#输入输出" class="headerlink" title="输入输出"></a>输入输出</h3><p>部署的输入输出结构如下:</p>
-<p><img src="/images/YOLOV8/yolov8det.png" alt="YOLOv8ONNX"></p>
-<p>以上模型输入尺寸为[1, 3, 1280, 1280], stride为[8, 16, 32]，模型有两个检测类别，三个检测头输出为[1, 66, 160, 160]，[1, 66, 80, 80]，[1, 66, 40, 40]， 每个stride尺寸方格内进行预测，假设stride为8，则1260x1260的尺寸内共有160x160个预测方格。前64组数据用于预测框，后面两个数据表示预测类别置信度，(这个模型中将类别置信度和坐标拼在一起，也可使用<a target="_blank" rel="noopener" href="https://github.com/airockchip/rknn_model_zoo/tree/main/examples/yolov8">RKNN官方部署方案</a>，后处理需要进行一定定的更改), 设定的regmax为16，因此用于计算框的数据长度为16x4为64。</p>
-<h3 id="后处理"><a href="#后处理" class="headerlink" title="后处理"></a>后处理</h3><h4 id="1-DFL框解码"><a href="#1-DFL框解码" class="headerlink" title="1. DFL框解码"></a>1. DFL框解码</h4><p>regmax为16，分为4组，分别预测l、t、b、r分别表示左上的x、y与右下的x、y坐标。首先对16个一组的坐标值进行计算Softmax，与regmax的16个索引值相乘后相加，得到最终的坐标值(这里计算的是一个期望值)。得到输出后，根据中心点计算坐标回归，这里的中心点是每个预测方格的中心点，以stride为8时举例，第一个中心点为(4, 4), 根据这个中心点可以求出这个方格中的预测坐标x1, y1, x2, y2. 代码如下：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">C, H, W = output.shape                           <span class="comment"># [66, 160, 160]</span></span><br><span class="line">output = output.reshape(C, -<span class="number">1</span>).T                 <span class="comment"># [160x160, 66]                                 </span></span><br><span class="line">bbox_dfl = output[:, :NUM_BINS * <span class="number">4</span>].reshape(-<span class="number">1</span>, <span class="number">4</span>, NUM_BINS)  <span class="comment">#[160x160, 4, 16]</span></span><br><span class="line"></span><br><span class="line">prob = softmax(bbox_dfl, axis=-<span class="number">1</span>)                  </span><br><span class="line">proj = np.arange(NUM_BINS, dtype=np.float32)      <span class="comment"># [0, 1, 2, ... 15]        </span></span><br><span class="line">bbox = np.<span class="built_in">sum</span>(prob * proj, axis=-<span class="number">1</span>) * stride      <span class="comment"># [160x160, 4]</span></span><br><span class="line"></span><br><span class="line">y, x = np.<span class="built_in">divmod</span>(np.arange(H * W), W)</span><br><span class="line">grid_x = (x * stride + stride / <span class="number">2</span>)</span><br><span class="line">grid_y = (y * stride + stride / <span class="number">2</span>)                <span class="comment"># 构造中心点坐标</span></span><br><span class="line"></span><br><span class="line">x1 = (grid_x - bbox[:, <span class="number">0</span>])                        <span class="comment"># 坐标回归</span></span><br><span class="line">y1 = (grid_y - bbox[:, <span class="number">1</span>])</span><br><span class="line">x2 = (grid_x + bbox[:, <span class="number">2</span>])</span><br><span class="line">y2 = (grid_y + bbox[:, <span class="number">3</span>])</span><br></pre></td></tr></table></figure>
-
-<h4 id="2-类别预测"><a href="#2-类别预测" class="headerlink" title="2. 类别预测"></a>2. 类别预测</h4><p>类别预测较为简单，对每个预测类别输出做sigmoid即可, 即可得到最终的置信度。(部分网络可能使用Softmax计算，用于输出不可能同时满足两个类别的情况)，类别大于conf_thresh阈值需要使用NMS进行进一步过滤。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cls_logits = output[:, NUM_BINS * <span class="number">4</span>:]</span><br><span class="line">probs = sigmoid(cls_logits)</span><br></pre></td></tr></table></figure>
-
-<h4 id="3-NMS"><a href="#3-NMS" class="headerlink" title="3. NMS"></a>3. NMS</h4><p>做NMS是为了过滤一些预测重复的框，选择置信度最高的框。判断标准就是计算IOU，IOU大于阈值的框被认为是重复框，只保留置信度最高的框。<img src="/images/YOLOV8/iou.png" alt="IOU"></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">nms_boxes</span>(<span class="params">boxes, scores, nms_thresh=<span class="number">0.5</span></span>):</span><br><span class="line">    x1, y1, x2, y2 = boxes.T               <span class="comment"># 坐标解包</span></span><br><span class="line">    areas = (x2 - x1) * (y2 - y1)          <span class="comment"># 计算原有框的面积</span></span><br><span class="line">    order = scores.argsort()[::-<span class="number">1</span>]         <span class="comment"># 排序，order这里是索引，置信度大的排在前面</span></span><br><span class="line">    keep = []                              <span class="comment"># 返回过滤后框索引</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> order.size &gt; <span class="number">0</span>:</span><br><span class="line">        i = order[<span class="number">0</span>]</span><br><span class="line">        keep.append(i)</span><br><span class="line">        xx1 = np.maximum(x1[i], x1[order[<span class="number">1</span>:]])</span><br><span class="line">        yy1 = np.maximum(y1[i], y1[order[<span class="number">1</span>:]])</span><br><span class="line">        xx2 = np.minimum(x2[i], x2[order[<span class="number">1</span>:]])</span><br><span class="line">        yy2 = np.minimum(y2[i], y2[order[<span class="number">1</span>:]])</span><br><span class="line">        inter = np.maximum(<span class="number">0.0</span>, xx2 - xx1) * np.maximum(<span class="number">0.0</span>, yy2 - yy1)</span><br><span class="line">        iou = inter / (areas[i] + areas[order[<span class="number">1</span>:]] - inter)</span><br><span class="line">        order = order[np.where(iou &lt;= nms_thresh)[<span class="number">0</span>] + <span class="number">1</span>]</span><br><span class="line">    <span class="keyword">return</span> np.array(keep, dtype=np.int32)</span><br></pre></td></tr></table></figure>
-<p>先计算相交部分面积inter，需要找到相交部分的左上角坐标[xx1， yy1]和右下角坐标[xx2, yy2]。假设原来的两个框坐标分别为[x1, y1, x2, y2],[x1’, y1’, x2’, y2’], xx1与yy1是x1与x1’和y1与y1’比较的较大的坐标，xx2与yy2相反，计算Inter时需要考虑不相交的情况。相并的部分面积就是两个框之和减去inter面积，计算IOU之后即可过滤IOU大于nms_thresh的部分(认为预测的是同一个物体)，并且这里会先保留score较大的框。</p>
-<h2 id="二、YOLOv8-OBB-旋转检测"><a href="#二、YOLOv8-OBB-旋转检测" class="headerlink" title="二、YOLOv8-OBB (旋转检测)"></a>二、YOLOv8-OBB (旋转检测)</h2><h3 id="输入输出-1"><a href="#输入输出-1" class="headerlink" title="输入输出"></a>输入输出</h3><p>部署的输入输出结构如下:</p>
-<p><img src="/images/YOLOV8/yolov8obb.png" alt="YOLOv8OBBONNX"></p>
-<p>以上模型输入尺寸为[1, 3, 1280, 1280], stride为[8, 16, 32]，模型有两个检测类别，三个检测头输出为[1, 67, 160, 160]，[1, 67, 80, 80]，[1, 67, 40, 40]，这个模型中我将角度拼到了预测框后面，最后是分类值。</p>
-<h3 id="后处理-1"><a href="#后处理-1" class="headerlink" title="后处理"></a>后处理</h3><h4 id="1-角度计算"><a href="#1-角度计算" class="headerlink" title="1. 角度计算"></a>1. 角度计算</h4><p>框计算与类别预测均与YOLOv8一致，角度计算非常简单，根据角度的输出计算真实角度即可，代码如下。这里theta这样计算是为了回归上的稳定，具体原理可参考相关论文</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">theta = output[num_box_channels, :]       <span class="comment"># (N,)</span></span><br><span class="line">theta = (sigmoid(theta) - <span class="number">0.25</span>) * np.pi  <span class="comment"># [-pi/4, 3pi/4] in radians</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="2-RotatedNMS"><a href="#2-RotatedNMS" class="headerlink" title="2. RotatedNMS"></a>2. RotatedNMS</h3><p>不同于YOLOv8，obb在计算IOU时需要考虑旋转角度，这里需要使用旋转框的IOU计算方式。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">rotated_iou_numpy</span>(<span class="params">box1, box2</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    计算两个旋转框的 IoU，box 为 [cx, cy, w, h, theta]，theta 单位为角度</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    rect1 = ((box1[<span class="number">0</span>], box1[<span class="number">1</span>]), (box1[<span class="number">2</span>], box1[<span class="number">3</span>]), box1[<span class="number">4</span>])</span><br><span class="line">    rect2 = ((box2[<span class="number">0</span>], box2[<span class="number">1</span>]), (box2[<span class="number">2</span>], box2[<span class="number">3</span>]), box2[<span class="number">4</span>])</span><br><span class="line"></span><br><span class="line">    int_pts = cv2.rotatedRectangleIntersection(rect1, rect2)[<span class="number">1</span>]</span><br><span class="line">    <span class="keyword">if</span> int_pts <span class="keyword">is</span> <span class="literal">None</span> <span class="keyword">or</span> <span class="built_in">len</span>(int_pts) &lt; <span class="number">3</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0.0</span></span><br><span class="line"></span><br><span class="line">    inter_area = cv2.contourArea(int_pts)</span><br><span class="line">    union_area = box1[<span class="number">2</span>] * box1[<span class="number">3</span>] + box2[<span class="number">2</span>] * box2[<span class="number">3</span>] - inter_area</span><br><span class="line">    <span class="keyword">return</span> inter_area / union_area <span class="keyword">if</span> union_area &gt; <span class="number">0</span> <span class="keyword">else</span> <span class="number">0.0</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">rotated_nms</span>(<span class="params">boxes, scores, iou_thresh=<span class="number">0.1</span></span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    NumPy 实现的旋转框 NMS</span></span><br><span class="line"><span class="string">    boxes: (N, 5) -&gt; cx, cy, w, h, angle</span></span><br><span class="line"><span class="string">    scores: (N,)</span></span><br><span class="line"><span class="string">    返回保留索引</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    order = scores.argsort()[::-<span class="number">1</span>]</span><br><span class="line">    keep = []</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> <span class="built_in">len</span>(order) &gt; <span class="number">0</span>:</span><br><span class="line">        i = order[<span class="number">0</span>]</span><br><span class="line">        keep.append(i)</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">len</span>(order) == <span class="number">1</span>:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        ious = np.array([</span><br><span class="line">            rotated_iou_numpy(boxes[i], boxes[j])</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> order[<span class="number">1</span>:]</span><br><span class="line">        ])</span><br><span class="line">        order = order[<span class="number">1</span>:][ious &lt;= iou_thresh]</span><br><span class="line">    <span class="keyword">return</span> np.array(keep, dtype=np.int32)</span><br></pre></td></tr></table></figure>
-<p>计算IOU时相较于普通的矩形框，需要使用旋转框的IOU计算方式，内部实现需要一些空间计算相关知识，不详细展开。Python部署可以使用Shaply、C++可以使用OpenCV。</p>
-<h2 id="三、YOLOv8-Pose-关键点检测"><a href="#三、YOLOv8-Pose-关键点检测" class="headerlink" title="三、YOLOv8-Pose (关键点检测)"></a>三、YOLOv8-Pose (关键点检测)</h2><h3 id="输入输出-2"><a href="#输入输出-2" class="headerlink" title="输入输出"></a>输入输出</h3><p>部署的输入输出结构如下:</p>
-<p><img src="/images/YOLOV8/yolov8pose.png" alt="YOLOv8PoseONNX"></p>
-<p>以上模型直接由官方ONNX模型修改而来，输入尺寸为[1, 3, 640, 640], stride为[8, 16, 32]，模型只有一个类别，三个检测头输出为[1, 116, 80, 80]，[1, 116, 40, 40]，[1, 116, 20, 20]，这个模型中我将关键点坐标放到了最后面，因此共有64+1+17x3个通道，模型输出17个人体关键点。</p>
-<h3 id="后处理-2"><a href="#后处理-2" class="headerlink" title="后处理"></a>后处理</h3><h4 id="1-关键点解码"><a href="#1-关键点解码" class="headerlink" title="1. 关键点解码"></a>1. 关键点解码</h4><p>关键点输出是[dx,dy,score …]这样依次排列的，根据坐标回归公式，dx, dy是相较于预测位置(x,y)的偏移量(这里是网格左上角点)，实际坐标就是网格左上角点加偏移量[x+2<em>dx, y+2</em>dy]，有一些其他的回归方案，要根据具体的版本进行处理。 (现在的版本与我这个模型的版本已经不太一致了，但是都是大同小异，在基准点位置上加上偏移量就能计算出坐标)</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">y, x = np.<span class="built_in">divmod</span>(np.arange(H * W), W)</span><br><span class="line">kpts_raw = out[:, NUM_BINS * <span class="number">4</span> + cls_num : NUM_BINS * <span class="number">4</span> + cls_num + NUM_KPTS * <span class="number">3</span>]</span><br><span class="line">kpts_raw = kpts_raw.reshape(-<span class="number">1</span>, NUM_KPTS, <span class="number">3</span>)</span><br><span class="line">kx = (kpts_raw[..., <span class="number">0</span>] * <span class="number">2.0</span> + x[:, <span class="literal">None</span>]) * stride</span><br><span class="line">ky = (kpts_raw[..., <span class="number">1</span>] * <span class="number">2.0</span> + y[:, <span class="literal">None</span>]) * stride          <span class="comment">#预测坐标</span></span><br><span class="line">kv = sigmoid(kpts_raw[..., <span class="number">2</span>])                               <span class="comment">#关键点置信度</span></span><br><span class="line">kx = (kx - dw) / scale                                       <span class="comment">#回归原图</span></span><br><span class="line">ky = (ky - dh) / scale</span><br><span class="line">keypoints = np.stack([kx, ky, kv], axis=-<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
-<p>这个模型只要做好坐标回归计算正确即可。有其他导出方案会输出一个关键点头，并且在模型中完成关键点回归，这种方案不会受到回归方式改变的影响，但是模型精度和速度降低，关键点部分会有一部分无效运算。输出ONNX如下<img src="/images/YOLOV8/yolov8posev2.png" alt="YOLOv8PoseV2ONNX"></p>
-<h2 id="四、YOLOv8-Seg-实例分割"><a href="#四、YOLOv8-Seg-实例分割" class="headerlink" title="四、YOLOv8-Seg (实例分割)"></a>四、YOLOv8-Seg (实例分割)</h2><h3 id="输入输出-3"><a href="#输入输出-3" class="headerlink" title="输入输出"></a>输入输出</h3><p>部署的输入输出结构如下:</p>
-<p><img src="/images/YOLOV8/yolov8seg.png" alt="YOLOv8SegONNX"></p>
-<p>输入尺寸为[1, 3, 1280, 1280], stride为[8, 16, 32]，模型两个类别，三个检测头输出为[1, 98, 160, 160],[1, 98, 80, 80]，[1, 98, 40, 40]，这个模型中我将mask系数放到了最后。并且还有一个[1, 32, 320, 320]的proto_mask用于计算输出。</p>
-<h3 id="后处理-3"><a href="#后处理-3" class="headerlink" title="后处理"></a>后处理</h3><h4 id="1-mask输出计算"><a href="#1-mask输出计算" class="headerlink" title="1. mask输出计算"></a>1. mask输出计算</h4><p>YOLO系列都是与框解码联系的，分割的模型处理在于做好mask输出的计算。这里我采用的方法是记录mask系数，做完nms后计算对应的mask。<br>计算mask时要考虑proto_mask尺寸，需要先resize到输入尺寸，并做一些crop处理(去除框外的mask，去掉letterbox补边的部分), 之后再回归原图的mask。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">process_masks</span>(<span class="params">mask_coeffs, proto_mask, boxes, scale, dw, dh, input_shape=(<span class="params"><span class="number">1280</span>, <span class="number">1280</span></span>)</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    根据 mask_coeffs 和 proto_mask 计算每个检测框的 mask</span></span><br><span class="line"><span class="string">    输出与原图同尺寸，只保留框内区域</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    num_dets = boxes.shape[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">if</span> num_dets == <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> []</span><br><span class="line"></span><br><span class="line">    mask_dim, _, _ = proto_mask.shape</span><br><span class="line">    input_h, input_w = input_shape</span><br><span class="line"></span><br><span class="line">    w0, h0 = <span class="built_in">int</span>((input_w - <span class="number">2</span> * dw) / scale), <span class="built_in">int</span>((input_h - <span class="number">2</span> * dh) / scale)      <span class="comment"># 原图尺寸 (去掉 letterbox)</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># resize proto 到输入大小再去掉 padding</span></span><br><span class="line">    proto = cv2.resize(proto_mask.transpose(<span class="number">1</span>, <span class="number">2</span>, <span class="number">0</span>), (input_w, input_h)).transpose(<span class="number">2</span>, <span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">    x0, y0 = <span class="built_in">int</span>(dw), <span class="built_in">int</span>(dh)</span><br><span class="line">    proto = proto[:, y0:y0 + <span class="built_in">int</span>(h0 * scale), x0:x0 + <span class="built_in">int</span>(w0 * scale)]</span><br><span class="line"></span><br><span class="line">    masks = mask_coeffs @ proto.reshape(mask_dim, -<span class="number">1</span>)               <span class="comment"># [N, 720*1280] 原图等比例缩放的大小</span></span><br><span class="line">    masks = sigmoid(masks)                            </span><br><span class="line">    masks = masks.reshape(num_dets, proto.shape[<span class="number">1</span>], proto.shape[<span class="number">2</span>]) <span class="comment"># [N, 720, 1280] 矩阵乘后计算sigmoid</span></span><br><span class="line"></span><br><span class="line">    masks = np.array([cv2.resize(m, (w0, h0)) <span class="keyword">for</span> m <span class="keyword">in</span> masks])      <span class="comment"># [N, 2160, 3840] 原图大小</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    final_masks = []</span><br><span class="line">    <span class="keyword">for</span> m, box <span class="keyword">in</span> <span class="built_in">zip</span>(masks, boxes.astype(<span class="built_in">int</span>)):</span><br><span class="line">        x1, y1, x2, y2 = np.clip(box, [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>], [w0, h0, w0, h0])</span><br><span class="line">        mask = (m &gt; <span class="number">0.5</span>).astype(np.uint8)                           <span class="comment"># 大于0.5的设为1，预测是物体的位置</span></span><br><span class="line">        mask[:y1, :] = mask[y2:, :] = <span class="number">0</span>                             <span class="comment"># 切掉框外的mask</span></span><br><span class="line">        mask[:, :x1] = mask[:, x2:] = <span class="number">0</span></span><br><span class="line">        final_masks.append(mask)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> final_masks</span><br></pre></td></tr></table></figure>
-<p>mask_coeffs是mask系数，输入维度为[n, 32], proto_mask是[1, 32, 320, 320], boxes是[n, 4]，scale是缩放比例，dw，dh是padding的大小，由letterbox计算所得。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>YOLO系列都是在预测头的基础上进行的，在网格内预测框位置，解码获得框与类别，关键点和分割知识多预测了关键点与mask系数，处理即可。本文的方案大都是对多个头输出进行拼接的，解码完框后再进一步计算其他信息，以减少一定的运算。</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://alexw914.github.io/2025/07/19/%E5%8D%9A%E5%AE%A2%E5%88%9B%E5%BB%BA/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/c33020ba-84ad-4eac-ac1a-2c132ca9d255.gif">
-      <meta itemprop="name" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Alex Tech Garden">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | Alex Tech Garden">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/07/19/%E5%8D%9A%E5%AE%A2%E5%88%9B%E5%BB%BA/" class="post-title-link" itemprop="url">Github博客创建</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2025-07-19 17:31:27" itemprop="dateCreated datePublished" datetime="2025-07-19T17:31:27+08:00">2025-07-19</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-11-21 01:16:20" itemprop="dateModified" datetime="2025-11-21T01:16:20+08:00">2025-11-21</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">前端</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="Hexo-NexT-个人博客部署流程"><a href="#Hexo-NexT-个人博客部署流程" class="headerlink" title="Hexo + NexT 个人博客部署流程"></a>Hexo + NexT 个人博客部署流程</h1><p>使用Hexo+NexT主题，搭建静态网页并部署至github。</p>
-<h2 id="项目介绍"><a href="#项目介绍" class="headerlink" title="项目介绍"></a>项目介绍</h2><ul>
-<li>使用 Hexo 框架管理博客内容，方便写作和生成静态文件</li>
-<li>使用 NexT 主题，界面简洁美观，支持多种功能扩展</li>
-<li>通过 GitHub Pages 实现免费托管和访问</li>
-</ul>
-<h2 id="博客地址展示-环境准备"><a href="#博客地址展示-环境准备" class="headerlink" title="博客地址展示 &amp; 环境准备"></a>博客地址展示 &amp; 环境准备</h2><p><a href="https://alexw914.github.io/">https://alexw914.github.io</a></p>
-<ul>
-<li>Node.js（建议安装最新 LTS 版本）</li>
-<li>Git客户端</li>
-<li>GitHub账号和仓库（仓库名格式为 <code>alexw914.github.io</code>）–替换为你的github用户名</li>
-</ul>
-<h2 id="Hexo生成静态网页并推送至github"><a href="#Hexo生成静态网页并推送至github" class="headerlink" title="Hexo生成静态网页并推送至github"></a>Hexo生成静态网页并推送至github</h2><h3 id="1-安装-Hexo"><a href="#1-安装-Hexo" class="headerlink" title="1. 安装 Hexo"></a>1. 安装 Hexo</h3><figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">npm <span class="keyword">install </span>-g hexo-cli</span><br><span class="line">hexo init hexo-<span class="keyword">blog </span><span class="comment"># 初始化博客项目（在空目录下）</span></span><br><span class="line">cd hexo-<span class="keyword">blog </span>&amp;&amp; npm <span class="keyword">install </span><span class="comment"># 安装依赖</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="2-安装主题并生成静态网页"><a href="#2-安装主题并生成静态网页" class="headerlink" title="2. 安装主题并生成静态网页"></a>2. 安装主题并生成静态网页</h3><p>下载hexo相关主题， 修改hexo-blog&#x2F;_config.yml文件中theme为next</p>
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https:<span class="regexp">//gi</span>thub.com<span class="regexp">/theme-next/</span>hexo-theme-<span class="keyword">next</span> themes/<span class="keyword">next</span> <span class="comment"># 克隆 NexT 主题, 修改配置文件, 编辑</span></span><br></pre></td></tr></table></figure>
-<p>生成静态网页, 预览效果执行hexo server</p>
-<figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo clean &amp; hexo <span class="keyword">generate</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="3-设置推送github"><a href="#3-设置推送github" class="headerlink" title="3. 设置推送github"></a>3. 设置推送github</h3><p>修改hexo-blog&#x2F;_config.yml中deploy相关内容，并执行hexo deploy</p>
-<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">deploy:</span></span><br><span class="line"><span class="symbol">  type:</span> git</span><br><span class="line"><span class="symbol">  repo:</span> https:<span class="comment">//github.com/alexw914/alexw914.github.io.git</span></span><br><span class="line"><span class="symbol">  branch:</span> main </span><br></pre></td></tr></table></figure>
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://alexw914.github.io/2025/07/19/%E5%B7%A5%E5%85%B7%E5%88%86%E4%BA%ABMockServer/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/c33020ba-84ad-4eac-ac1a-2c132ca9d255.gif">
-      <meta itemprop="name" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Alex Tech Garden">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | Alex Tech Garden">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/07/19/%E5%B7%A5%E5%85%B7%E5%88%86%E4%BA%ABMockServer/" class="post-title-link" itemprop="url">工具分享MockServer</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2025-07-19 17:31:27" itemprop="dateCreated datePublished" datetime="2025-07-19T17:31:27+08:00">2025-07-19</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-11-21 01:16:20" itemprop="dateModified" datetime="2025-11-21T01:16:20+08:00">2025-11-21</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index"><span itemprop="name">工具</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="MockServer"><a href="#MockServer" class="headerlink" title="MockServer"></a><a target="_blank" rel="noopener" href="https://github.com/mock-server/mockserver">MockServer</a></h1><p>MockServer可用于建立模拟http&#x2F;https请求响应的服务器，用于接口调试，可接受任意http请求，返回自定义内容。</p>
-<p><a target="_blank" rel="noopener" href="https://www.mock-server.com/where/docker.html">docker快速案例</a></p>
-<h3 id="1-安装docker"><a href="#1-安装docker" class="headerlink" title="1. 安装docker"></a>1. 安装docker</h3><h3 id="2-拉取镜像"><a href="#2-拉取镜像" class="headerlink" title="2. 拉取镜像"></a>2. 拉取镜像</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull mockserver/mockserver</span><br></pre></td></tr></table></figure>
-<h2 id="3-配置文件准备"><a href="#3-配置文件准备" class="headerlink" title="3. 配置文件准备"></a>3. 配置文件准备</h2><p>   需要准备一个mockeserver.properties和一个initializerJson.json文件：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">touch</span> mockeserver.properties initializerJson.json</span><br></pre></td></tr></table></figure>
-<p>   mockeserver.properties具体内容参考<a target="_blank" rel="noopener" href="https://www.mock-server.com/mock_server/configuration_properties.html">链接</a>, 这里只需要添加以下内容，并在initializerJson.json定义接口形式即可：</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">mockeserver<span class="selector-class">.properties</span>:</span><br><span class="line">   mockserver.initializationJsonPath=/config/initializerJson.json</span><br><span class="line"></span><br><span class="line">initializerJson.json:</span><br><span class="line">[</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;httpRequest&quot;: &#123;</span><br><span class="line">        &quot;<span class="selector-tag">path</span>&quot;: <span class="string">&quot;/data/static/sync_data&quot;</span>      // 接口url定义</span><br><span class="line">      &#125;,</span><br><span class="line">      &quot;httpResponse&quot;: &#123;                       // 返回形式</span><br><span class="line">        &quot;<span class="selector-tag">body</span>&quot;: &#123;</span><br><span class="line">            &quot;<span class="selector-tag">code</span>&quot;: <span class="number">0</span>,</span><br><span class="line">            <span class="string">&quot;errmsg&quot;</span>: <span class="string">&quot;OK&quot;</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;httpRequest&quot;: &#123;</span><br><span class="line">        &quot;<span class="selector-tag">path</span>&quot;: <span class="string">&quot;/status&quot;</span>                     // 定义多个url</span><br><span class="line">      &#125;,</span><br><span class="line">      &quot;httpResponse&quot;: &#123;</span><br><span class="line">        &quot;<span class="selector-tag">body</span>&quot;: &#123;</span><br><span class="line">            &quot;<span class="selector-tag">code</span>&quot;: <span class="number">0</span>,</span><br><span class="line">            <span class="string">&quot;errmsg&quot;</span>: <span class="string">&quot;OK&quot;</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
-<h2 id="4-启动镜像"><a href="#4-启动镜像" class="headerlink" title="4. 启动镜像"></a>4. 启动镜像</h2><p>   定义完毕后，启动如下命令:</p>
-<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="keyword">run</span><span class="language-bash"> -d --<span class="built_in">rm</span> --name mock -v $(<span class="built_in">pwd</span>):/config -p 7535:7535  mockserver/mockserver -serverPort 7535</span></span><br></pre></td></tr></table></figure>
-<p>   –name用于定义启动镜像名称, 这里定义为mock方便启动和查看日志, -v表示映射某一文件夹到镜像某一位置，-p表示端口映射, mockserver&#x2F;mockserver代表启动服务。<br>   启动完成后, 使用postman或其他形式调用接口，并可在日志中查看内容</p>
-<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">docker logs -f mock</span></span><br></pre></td></tr></table></figure>
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
 
 
 
