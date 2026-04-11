@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"alexw914.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.23.2","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"default"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="这篇文章整理模型压缩与量化相关的核心知识点，重点包括图优化、QAT、PTQ、量化细节和不同部署框架中的落地方式。 1. 模型压缩与图优化在真正进入量化之前，通常先做计算图层面的优化。这样可以减少冗余算子，也更容易发现性能瓶颈。 1.1 算子耗时分析可以先用框架或推理引擎的 profiling 功能定位瓶颈，例如：  onnxruntime 中开启 enable_profiling&#x3D;true 查看每">
+<meta property="og:type" content="article">
+<meta property="og:title" content="模型优化">
+<meta property="og:url" content="https://alexw914.github.io/2026/03/18/%E6%A8%A1%E5%9E%8B%E9%87%8F%E5%8C%96/index.html">
+<meta property="og:site_name" content="Alex Tech Garden">
+<meta property="og:description" content="这篇文章整理模型压缩与量化相关的核心知识点，重点包括图优化、QAT、PTQ、量化细节和不同部署框架中的落地方式。 1. 模型压缩与图优化在真正进入量化之前，通常先做计算图层面的优化。这样可以减少冗余算子，也更容易发现性能瓶颈。 1.1 算子耗时分析可以先用框架或推理引擎的 profiling 功能定位瓶颈，例如：  onnxruntime 中开启 enable_profiling&#x3D;true 查看每">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-03-18T14:38:32.000Z">
+<meta property="article:modified_time" content="2026-04-11T07:44:20.736Z">
+<meta property="article:tag" content="模型优化">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://alexw914.github.io/2026/03/18/%E6%A8%A1%E5%9E%8B%E9%87%8F%E5%8C%96/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://alexw914.github.io/2026/03/18/%E6%A8%A1%E5%9E%8B%E9%87%8F%E5%8C%96/","path":"2026/03/18/模型量化/","title":"模型优化"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>模型优化 | Alex Tech Garden</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/quicklink/3.0.1/quicklink.umd.js" integrity="sha256-44BednzIpUeQJcY8qtLyarFu0UCCTbgmWOvaoehiFQQ=" crossorigin="anonymous" defer></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":3000,"priority":true,"url":"https://alexw914.github.io/2026/03/18/%E6%A8%A1%E5%9E%8B%E9%87%8F%E5%8C%96/"}</script>
+  <script src="/js/third-party/quicklink.js" defer></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Alex Tech Garden</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">About C++/Python and AI</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/home" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">13</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">5</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">11</span></a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E6%A8%A1%E5%9E%8B%E5%8E%8B%E7%BC%A9%E4%B8%8E%E5%9B%BE%E4%BC%98%E5%8C%96"><span class="nav-number">1.</span> <span class="nav-text">1. 模型压缩与图优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-%E7%AE%97%E5%AD%90%E8%80%97%E6%97%B6%E5%88%86%E6%9E%90"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 算子耗时分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-%E5%B8%B8%E8%A7%81%E5%9B%BE%E4%BC%98%E5%8C%96%E6%96%B9%E5%BC%8F"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 常见图优化方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-%E5%B7%A5%E5%85%B7%E9%93%BE%E7%9B%B8%E5%85%B3%E4%BC%98%E5%8C%96"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 工具链相关优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4-%E5%BC%82%E6%9E%84%E5%B9%B3%E5%8F%B0%E8%A7%86%E8%A7%92"><span class="nav-number">1.4.</span> <span class="nav-text">1.4 异构平台视角</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E9%87%8F%E5%8C%96%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5"><span class="nav-number">2.</span> <span class="nav-text">2. 量化基础概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E4%BB%80%E4%B9%88%E6%98%AF%E9%87%8F%E5%8C%96"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 什么是量化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E5%B8%B8%E8%A7%81%E7%9B%AE%E6%A0%87"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 常见目标</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-QAT%EF%BC%9A%E9%87%8F%E5%8C%96%E6%84%9F%E7%9F%A5%E8%AE%AD%E7%BB%83"><span class="nav-number">3.</span> <span class="nav-text">3. QAT：量化感知训练</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-QAT-%E7%9A%84%E6%9C%AC%E8%B4%A8"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 QAT 的本质</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E5%AE%9E%E8%B7%B5%E4%B8%AD%E7%9A%84%E9%87%8D%E7%82%B9"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 实践中的重点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-%E5%B8%B8%E8%A7%81%E5%B7%A5%E5%85%B7"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 常见工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-QAT-%E4%B8%AD%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98"><span class="nav-number">3.4.</span> <span class="nav-text">3.4 QAT 中常见问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-PTQ%EF%BC%9A%E8%AE%AD%E7%BB%83%E5%90%8E%E9%87%8F%E5%8C%96"><span class="nav-number">4.</span> <span class="nav-text">4. PTQ：训练后量化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-PTQ-%E7%9A%84%E7%89%B9%E7%82%B9"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 PTQ 的特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-%E5%B8%B8%E8%A7%81%E5%AE%9E%E7%8E%B0%E8%B7%AF%E5%BE%84"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 常见实现路径</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-PTQ-%E5%85%B3%E6%B3%A8%E7%82%B9"><span class="nav-number">4.3.</span> <span class="nav-text">4.3 PTQ 关注点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-ONNX-%E4%B8%AD%E7%9A%84%E9%87%8F%E5%8C%96%E8%A1%A8%E7%A4%BA"><span class="nav-number">5.</span> <span class="nav-text">5. ONNX 中的量化表示</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-QDQ-%E8%8A%82%E7%82%B9"><span class="nav-number">5.1.</span> <span class="nav-text">5.1 QDQ 节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-%E5%B8%B8%E8%A7%81%E7%94%A8%E9%80%94"><span class="nav-number">5.2.</span> <span class="nav-text">5.2 常见用途</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E9%87%8F%E5%8C%96%E4%B8%AD%E7%9A%84%E5%85%B3%E9%94%AE%E7%BB%86%E8%8A%82"><span class="nav-number">6.</span> <span class="nav-text">6. 量化中的关键细节</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#6-1-%E6%9D%83%E9%87%8D%E9%87%8F%E5%8C%96%E4%B8%8E%E6%BF%80%E6%B4%BB%E9%87%8F%E5%8C%96"><span class="nav-number">6.1.</span> <span class="nav-text">6.1 权重量化与激活量化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-2-%E9%9D%99%E6%80%81%E9%87%8F%E5%8C%96%E4%B8%8E%E5%8A%A8%E6%80%81%E9%87%8F%E5%8C%96"><span class="nav-number">6.2.</span> <span class="nav-text">6.2 静态量化与动态量化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-3-%E5%AF%B9%E7%A7%B0%E9%87%8F%E5%8C%96%E4%B8%8E%E9%9D%9E%E5%AF%B9%E7%A7%B0%E9%87%8F%E5%8C%96"><span class="nav-number">6.3.</span> <span class="nav-text">6.3 对称量化与非对称量化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-4-%E5%B8%B8%E8%A7%81%E7%B2%BE%E5%BA%A6%E8%A1%A8%E7%A4%BA"><span class="nav-number">6.4.</span> <span class="nav-text">6.4 常见精度表示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-5-%E9%87%8F%E5%8C%96%E7%B2%92%E5%BA%A6"><span class="nav-number">6.5.</span> <span class="nav-text">6.5 量化粒度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-6-%E6%A0%A1%E5%87%86%E6%96%B9%E6%B3%95"><span class="nav-number">6.6.</span> <span class="nav-text">6.6 校准方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-7-%E6%B7%B7%E5%90%88%E9%87%8F%E5%8C%96"><span class="nav-number">6.7.</span> <span class="nav-text">6.7 混合量化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-%E5%A4%A7%E6%A8%A1%E5%9E%8B%E9%87%8F%E5%8C%96"><span class="nav-number">7.</span> <span class="nav-text">7. 大模型量化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-%E4%B8%80%E4%B8%AA%E5%8F%AF%E6%89%A9%E5%B1%95%E7%9A%84%E6%95%B4%E7%90%86%E6%A1%86%E6%9E%B6"><span class="nav-number">8.</span> <span class="nav-text">8. 一个可扩展的整理框架</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt=""
+      src="/images/c33020ba-84ad-4eac-ac1a-2c132ca9d255.gif">
+  <p class="site-author-name" itemprop="name"></p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/alexw914" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;alexw914" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:lwu914@icloud.com" title="E-Mail → mailto:lwu914@icloud.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://x.com/lwu914" title="Twitter → https:&#x2F;&#x2F;x.com&#x2F;lwu914" rel="noopener me" target="_blank"><i class="fab fa-twitter fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.youtube.com/" title="YouTube → https:&#x2F;&#x2F;www.youtube.com" rel="noopener me" target="_blank"><i class="fab fa-youtube fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/" title="Weibo → https:&#x2F;&#x2F;weibo.com" rel="noopener me" target="_blank"><i class="fab fa-weibo fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/" title="FB Page → https:&#x2F;&#x2F;www.facebook.com" rel="noopener me" target="_blank"><i class="fab fa-facebook fa-fw"></i></a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://alexw914.github.io/2026/03/18/%E6%A8%A1%E5%9E%8B%E9%87%8F%E5%8C%96/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/c33020ba-84ad-4eac-ac1a-2c132ca9d255.gif">
+      <meta itemprop="name" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alex Tech Garden">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="模型优化 | Alex Tech Garden">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          模型优化<a href="https://github.com/alexw914/hexo-blog/tree/main/source/_posts/_posts/%E6%A8%A1%E5%9E%8B%E9%87%8F%E5%8C%96.md" class="post-edit-link" title="编辑" rel="noopener" target="_blank"><i class="fa fa-pen-nib"></i></a>
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2026-03-18 22:38:32" itemprop="dateCreated datePublished" datetime="2026-03-18T22:38:32+08:00">2026-03-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2026-04-11 15:44:20" itemprop="dateModified" datetime="2026-04-11T15:44:20+08:00">2026-04-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2/" itemprop="url" rel="index"><span itemprop="name">模型部署</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>这篇文章整理模型压缩与量化相关的核心知识点，重点包括图优化、<code>QAT</code>、<code>PTQ</code>、量化细节和不同部署框架中的落地方式。</p>
+<h2 id="1-模型压缩与图优化"><a href="#1-模型压缩与图优化" class="headerlink" title="1. 模型压缩与图优化"></a>1. 模型压缩与图优化</h2><p>在真正进入量化之前，通常先做计算图层面的优化。这样可以减少冗余算子，也更容易发现性能瓶颈。</p>
+<h3 id="1-1-算子耗时分析"><a href="#1-1-算子耗时分析" class="headerlink" title="1.1 算子耗时分析"></a>1.1 算子耗时分析</h3><p>可以先用框架或推理引擎的 profiling 功能定位瓶颈，例如：</p>
+<ul>
+<li><code>onnxruntime</code> 中开启 <code>enable_profiling=true</code></li>
+<li>查看每个算子的执行时间</li>
+<li>判断瓶颈是在 CPU、GPU 还是 NPU 上</li>
+</ul>
+<h3 id="1-2-常见图优化方式"><a href="#1-2-常见图优化方式" class="headerlink" title="1.2 常见图优化方式"></a>1.2 常见图优化方式</h3><ul>
+<li>常量折叠：<code>FoldConstant</code></li>
+<li>算子融合：例如 Conv + BN + Activation</li>
+<li>冗余算子消除</li>
+<li>等价算子替换</li>
+</ul>
+<p>一些典型例子：</p>
+<ul>
+<li><code>MatMul + Add</code> 替换为 <code>GEMM</code></li>
+<li>连续的 <code>reshape + reshape</code> 合并</li>
+<li>成对的 <code>unsqueeze + squeeze</code> 消除</li>
+</ul>
+<h3 id="1-3-工具链相关优化"><a href="#1-3-工具链相关优化" class="headerlink" title="1.3 工具链相关优化"></a>1.3 工具链相关优化</h3><p>可以关注这些工具在图层面的处理能力：</p>
+<ul>
+<li><code>onnx-simplifier</code></li>
+<li><code>RKNN</code></li>
+<li><code>TensorRT</code></li>
+</ul>
+<p>这里可以重点分析：</p>
+<ul>
+<li>是否存在算子落回 CPU 执行</li>
+<li>是否发生不必要的数据搬运</li>
+<li>是否有引擎不支持的节点导致性能退化</li>
+</ul>
+<h3 id="1-4-异构平台视角"><a href="#1-4-异构平台视角" class="headerlink" title="1.4 异构平台视角"></a>1.4 异构平台视角</h3><p>部署时还需要考虑不同硬件的执行特点：</p>
+<ul>
+<li><code>GPU</code></li>
+<li><code>NPU</code></li>
+<li><code>CPU</code></li>
+</ul>
+<p>不同平台对于算子支持、数据格式、量化方式的偏好并不一致，量化方案最好和目标硬件一起设计。</p>
+<h2 id="2-量化基础概念"><a href="#2-量化基础概念" class="headerlink" title="2. 量化基础概念"></a>2. 量化基础概念</h2><h3 id="2-1-什么是量化"><a href="#2-1-什么是量化" class="headerlink" title="2.1 什么是量化"></a>2.1 什么是量化</h3><p>量化的核心是把高精度数值表示转换成低比特表示，以减少：</p>
+<ul>
+<li>模型体积</li>
+<li>内存带宽占用</li>
+<li>推理延迟</li>
+</ul>
+<h3 id="2-2-常见目标"><a href="#2-2-常见目标" class="headerlink" title="2.2 常见目标"></a>2.2 常见目标</h3><ul>
+<li>提升推理速度</li>
+<li>降低显存或内存占用</li>
+<li>适配硬件推理单元</li>
+<li>在精度和性能之间寻找平衡</li>
+</ul>
+<h2 id="3-QAT：量化感知训练"><a href="#3-QAT：量化感知训练" class="headerlink" title="3. QAT：量化感知训练"></a>3. QAT：量化感知训练</h2><h3 id="3-1-QAT-的本质"><a href="#3-1-QAT-的本质" class="headerlink" title="3.1 QAT 的本质"></a>3.1 QAT 的本质</h3><p><code>QAT</code> 本质上还是训练或微调，只是在训练过程中显式模拟量化误差，让模型逐步适应低比特表示。</p>
+<h3 id="3-2-实践中的重点"><a href="#3-2-实践中的重点" class="headerlink" title="3.2 实践中的重点"></a>3.2 实践中的重点</h3><ul>
+<li>训练配置要尽量贴近目标硬件</li>
+<li>某些硬件不支持非对称量化，需要提前对齐限制</li>
+<li>量化节点的插入位置会影响最终精度</li>
+</ul>
+<p>例如：</p>
+<ul>
+<li><code>TensorRT</code> 对某些量化形式支持有限</li>
+<li>实际部署中经常需要约束为特定的 <code>INT8</code> 方案</li>
+</ul>
+<h3 id="3-3-常见工具"><a href="#3-3-常见工具" class="headerlink" title="3.3 常见工具"></a>3.3 常见工具</h3><ul>
+<li><code>torch.ao</code></li>
+<li><code>pytorch_quantization</code></li>
+</ul>
+<p>这类工具通常会涉及：</p>
+<ul>
+<li>节点白名单，如 <code>Conv</code>、<code>Linear</code>、<code>MaxPool</code></li>
+<li>激活量化与权重量化的插入方式</li>
+<li>前向中的 fake quant</li>
+<li>反向传播时对量化参数的处理</li>
+</ul>
+<h3 id="3-4-QAT-中常见问题"><a href="#3-4-QAT-中常见问题" class="headerlink" title="3.4 QAT 中常见问题"></a>3.4 QAT 中常见问题</h3><ul>
+<li>量化参数初始化如何确定</li>
+<li>节点融合后插桩位置如何变化</li>
+<li>动态图如何转换为更稳定的静态表示</li>
+<li>不同量化方法如 <code>LSQ</code>、<code>LSQ+</code> 的适用场景</li>
+</ul>
+<h2 id="4-PTQ：训练后量化"><a href="#4-PTQ：训练后量化" class="headerlink" title="4. PTQ：训练后量化"></a>4. PTQ：训练后量化</h2><h3 id="4-1-PTQ-的特点"><a href="#4-1-PTQ-的特点" class="headerlink" title="4.1 PTQ 的特点"></a>4.1 PTQ 的特点</h3><p><code>PTQ</code> 不需要重新训练模型，通常只需要校准数据即可完成量化，工程落地成本更低。</p>
+<h3 id="4-2-常见实现路径"><a href="#4-2-常见实现路径" class="headerlink" title="4.2 常见实现路径"></a>4.2 常见实现路径</h3><ul>
+<li><code>RKNN</code> 的 PTQ</li>
+<li><code>TensorRT</code> 的 PTQ</li>
+<li><code>ONNX Runtime</code> 的 <code>quantize_static</code></li>
+<li>一些模型转换链路中的量化工具，如 <code>onnx2tf</code></li>
+</ul>
+<h3 id="4-3-PTQ-关注点"><a href="#4-3-PTQ-关注点" class="headerlink" title="4.3 PTQ 关注点"></a>4.3 PTQ 关注点</h3><ul>
+<li>校准数据集是否有代表性</li>
+<li>激活分布是否稳定</li>
+<li>某些层是否不适合量化</li>
+<li>是否需要混合精度</li>
+</ul>
+<h2 id="5-ONNX-中的量化表示"><a href="#5-ONNX-中的量化表示" class="headerlink" title="5. ONNX 中的量化表示"></a>5. ONNX 中的量化表示</h2><h3 id="5-1-QDQ-节点"><a href="#5-1-QDQ-节点" class="headerlink" title="5.1 QDQ 节点"></a>5.1 QDQ 节点</h3><p><code>ONNX</code> 里常见的量化表达方式是 <code>QDQ</code>：</p>
+<ul>
+<li><code>QuantizeLinear</code></li>
+<li><code>DequantizeLinear</code></li>
+</ul>
+<p>它的优点是表达清晰，便于在图层面对量化节点进行插入、分析和转换。</p>
+<h3 id="5-2-常见用途"><a href="#5-2-常见用途" class="headerlink" title="5.2 常见用途"></a>5.2 常见用途</h3><ul>
+<li>表达量化后的计算图</li>
+<li>为后端推理引擎提供量化信息</li>
+<li>用于分析哪些节点被量化、哪些节点保持浮点</li>
+</ul>
+<h2 id="6-量化中的关键细节"><a href="#6-量化中的关键细节" class="headerlink" title="6. 量化中的关键细节"></a>6. 量化中的关键细节</h2><h3 id="6-1-权重量化与激活量化"><a href="#6-1-权重量化与激活量化" class="headerlink" title="6.1 权重量化与激活量化"></a>6.1 权重量化与激活量化</h3><ul>
+<li>权重量化：通常更稳定，离线处理方便</li>
+<li>激活量化：对推理时输入分布更敏感</li>
+</ul>
+<h3 id="6-2-静态量化与动态量化"><a href="#6-2-静态量化与动态量化" class="headerlink" title="6.2 静态量化与动态量化"></a>6.2 静态量化与动态量化</h3><ul>
+<li>静态量化：推理前已确定量化参数</li>
+<li>动态量化：激活在推理时再量化，常见于仅权重量化场景</li>
+</ul>
+<h3 id="6-3-对称量化与非对称量化"><a href="#6-3-对称量化与非对称量化" class="headerlink" title="6.3 对称量化与非对称量化"></a>6.3 对称量化与非对称量化</h3><p>量化时一般会涉及：</p>
+<ul>
+<li><code>scale</code></li>
+<li><code>zero_point</code></li>
+</ul>
+<p>需要区分：</p>
+<ul>
+<li>对称量化</li>
+<li>非对称量化</li>
+<li>线性量化</li>
+<li>非线性量化</li>
+</ul>
+<h3 id="6-4-常见精度表示"><a href="#6-4-常见精度表示" class="headerlink" title="6.4 常见精度表示"></a>6.4 常见精度表示</h3><ul>
+<li><code>W8A8</code></li>
+<li><code>W8A16</code></li>
+<li><code>FP16</code></li>
+<li><code>FP8</code></li>
+</ul>
+<h3 id="6-5-量化粒度"><a href="#6-5-量化粒度" class="headerlink" title="6.5 量化粒度"></a>6.5 量化粒度</h3><ul>
+<li><code>per-tensor</code></li>
+<li><code>per-channel</code></li>
+</ul>
+<p>粒度不同，通常会影响：</p>
+<ul>
+<li>精度表现</li>
+<li>实现复杂度</li>
+<li>硬件支持程度</li>
+</ul>
+<h3 id="6-6-校准方法"><a href="#6-6-校准方法" class="headerlink" title="6.6 校准方法"></a>6.6 校准方法</h3><p>常见校准方式：</p>
+<ul>
+<li><code>MinMax</code></li>
+<li><code>KL</code></li>
+</ul>
+<p>对于 hard-case，常见手段包括：</p>
+<ul>
+<li>调整校准集</li>
+<li>改变量化粒度，如 <code>channel-wise</code></li>
+<li>逐层分析误差来源</li>
+</ul>
+<h3 id="6-7-混合量化"><a href="#6-7-混合量化" class="headerlink" title="6.7 混合量化"></a>6.7 混合量化</h3><p>如果全量化导致精度掉点严重，可以考虑：</p>
+<ul>
+<li>把尾部非线性算子移出量化路径</li>
+<li>保留部分层为高精度</li>
+<li>采用混合量化策略</li>
+</ul>
+<p>例如常见需要重点观察的节点：</p>
+<ul>
+<li><code>sigmoid</code></li>
+<li><code>nms</code></li>
+</ul>
+<h2 id="7-大模型量化"><a href="#7-大模型量化" class="headerlink" title="7. 大模型量化"></a>7. 大模型量化</h2><p>对于大模型，常见方案往往偏向 <code>weight-only</code>：</p>
+<ul>
+<li><code>GPTQ</code></li>
+<li><code>AWQ</code></li>
+</ul>
+<p>这类方法的核心目标通常是：</p>
+<ul>
+<li>降低权重存储成本</li>
+<li>尽量控制精度损失</li>
+<li>提高大模型推理可部署性</li>
+</ul>
+<h2 id="8-一个可扩展的整理框架"><a href="#8-一个可扩展的整理框架" class="headerlink" title="8. 一个可扩展的整理框架"></a>8. 一个可扩展的整理框架</h2><p>后续如果继续补内容，可以按下面结构补充实例：</p>
+<ol>
+<li>原始模型与目标硬件</li>
+<li>图优化前后的差异</li>
+<li>PTQ 流程与结果</li>
+<li>QAT 流程与结果</li>
+<li>逐层误差分析</li>
+<li>混合量化策略</li>
+<li>TensorRT &#x2F; RKNN &#x2F; ONNX Runtime 的部署差异</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%A8%A1%E5%9E%8B%E4%BC%98%E5%8C%96/" rel="tag"># 模型优化</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/11/21/%E7%AE%97%E6%B3%95%E5%88%B7%E9%A2%98/" rel="prev" title="算法刷题">
+                  <i class="fa fa-angle-left"></i> 算法刷题
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2026/03/18/%E6%8C%87%E4%BB%A4%E9%9B%86%E4%BC%98%E5%8C%96/" rel="next" title="指令集优化">
+                  指令集优化 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder"></span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/alexw914/hexo-blog" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>
