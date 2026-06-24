@@ -102,7 +102,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/home" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">13</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">5</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">11</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/home" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">14</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">5</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">12</span></a></li>
   </ul>
 </nav>
 
@@ -185,6 +185,110 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://alexw914.github.io/2025/07/19/%E5%8D%9A%E5%AE%A2%E5%88%9B%E5%BB%BA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/c33020ba-84ad-4eac-ac1a-2c132ca9d255.gif">
+      <meta itemprop="name" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alex Tech Garden">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content=" | Alex Tech Garden">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/07/19/%E5%8D%9A%E5%AE%A2%E5%88%9B%E5%BB%BA/" class="post-title-link" itemprop="url">Github博客创建</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-07-19 17:31:27" itemprop="dateCreated datePublished" datetime="2025-07-19T17:31:27+08:00">2025-07-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2026-06-24 23:46:54" itemprop="dateModified" datetime="2026-06-24T23:46:54+08:00">2026-06-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">前端</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="Hexo-NexT-个人博客部署流程"><a href="#Hexo-NexT-个人博客部署流程" class="headerlink" title="Hexo + NexT 个人博客部署流程"></a>Hexo + NexT 个人博客部署流程</h1><p>使用Hexo+NexT主题，搭建静态网页并部署至github。</p>
+<h2 id="项目介绍"><a href="#项目介绍" class="headerlink" title="项目介绍"></a>项目介绍</h2><ul>
+<li>使用 Hexo 框架管理博客内容，方便写作和生成静态文件</li>
+<li>使用 NexT 主题，界面简洁美观，支持多种功能扩展</li>
+<li>通过 GitHub Pages 实现免费托管和访问</li>
+</ul>
+<h2 id="博客地址展示-环境准备"><a href="#博客地址展示-环境准备" class="headerlink" title="博客地址展示 &amp; 环境准备"></a>博客地址展示 &amp; 环境准备</h2><p><a href="https://alexw914.github.io/">https://alexw914.github.io</a></p>
+<ul>
+<li>Node.js（建议安装最新 LTS 版本）</li>
+<li>Git客户端</li>
+<li>GitHub账号和仓库（仓库名格式为 <code>alexw914.github.io</code>）–替换为你的github用户名</li>
+</ul>
+<h2 id="Hexo生成静态网页并推送至github"><a href="#Hexo生成静态网页并推送至github" class="headerlink" title="Hexo生成静态网页并推送至github"></a>Hexo生成静态网页并推送至github</h2><h3 id="1-安装-Hexo"><a href="#1-安装-Hexo" class="headerlink" title="1. 安装 Hexo"></a>1. 安装 Hexo</h3><figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">npm <span class="keyword">install </span>-g hexo-cli</span><br><span class="line">hexo init hexo-<span class="keyword">blog </span><span class="comment"># 初始化博客项目（在空目录下）</span></span><br><span class="line">cd hexo-<span class="keyword">blog </span>&amp;&amp; npm <span class="keyword">install </span><span class="comment"># 安装依赖</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-安装主题并生成静态网页"><a href="#2-安装主题并生成静态网页" class="headerlink" title="2. 安装主题并生成静态网页"></a>2. 安装主题并生成静态网页</h3><p>下载hexo相关主题， 修改hexo-blog&#x2F;_config.yml文件中theme为next</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https:<span class="regexp">//gi</span>thub.com<span class="regexp">/theme-next/</span>hexo-theme-<span class="keyword">next</span> themes/<span class="keyword">next</span> <span class="comment"># 克隆 NexT 主题, 修改配置文件, 编辑</span></span><br></pre></td></tr></table></figure>
+<p>生成静态网页, 预览效果执行hexo server</p>
+<figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo clean &amp; hexo <span class="keyword">generate</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-设置推送github"><a href="#3-设置推送github" class="headerlink" title="3. 设置推送github"></a>3. 设置推送github</h3><p>修改hexo-blog&#x2F;_config.yml中deploy相关内容，并执行hexo deploy</p>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">deploy:</span></span><br><span class="line"><span class="symbol">  type:</span> git</span><br><span class="line"><span class="symbol">  repo:</span> https:<span class="comment">//github.com/alexw914/alexw914.github.io.git</span></span><br><span class="line"><span class="symbol">  branch:</span> main </span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
     <link itemprop="mainEntityOfPage" href="https://alexw914.github.io/2025/07/19/%E5%B7%A5%E5%85%B7%E5%88%86%E4%BA%ABMockServer/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -221,7 +325,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-06-24 23:32:13" itemprop="dateModified" datetime="2026-06-24T23:32:13+08:00">2026-06-24</time>
+      <time title="修改时间：2026-06-24 23:46:54" itemprop="dateModified" datetime="2026-06-24T23:46:54+08:00">2026-06-24</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
