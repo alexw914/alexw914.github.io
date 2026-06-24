@@ -20,13 +20,15 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"alexw914.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.23.2","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"default"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
 
-    <meta property="og:type" content="article">
+    <meta name="description" content="基础语法C和C++区别C：过程式（Procedural）以函数为中心、数据与函数分离、通过结构体 + 函数模拟数据封装 C++是C的超集，具备C的功能，并且引入了面向对象思想，引入了类这个概念。具备一些特性，例如虚函数、模版、C++ 在保持底层能力的同时，通过 RAII、模板和面向对象机制提升抽象能力，使其更适合大型工程系统，如游戏引擎、自动驾驶、机器人等。 static与const关键字、指针常">
+<meta property="og:type" content="article">
 <meta property="og:title" content="C++">
 <meta property="og:url" content="https://alexw914.github.io/2026/03/18/C++/index.html">
 <meta property="og:site_name" content="Alex Tech Garden">
+<meta property="og:description" content="基础语法C和C++区别C：过程式（Procedural）以函数为中心、数据与函数分离、通过结构体 + 函数模拟数据封装 C++是C的超集，具备C的功能，并且引入了面向对象思想，引入了类这个概念。具备一些特性，例如虚函数、模版、C++ 在保持底层能力的同时，通过 RAII、模板和面向对象机制提升抽象能力，使其更适合大型工程系统，如游戏引擎、自动驾驶、机器人等。 static与const关键字、指针常">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-03-18T14:38:32.000Z">
-<meta property="article:modified_time" content="2026-04-15T15:31:52.729Z">
+<meta property="article:modified_time" content="2026-06-24T15:32:13.975Z">
 <meta property="article:tag" content="C++">
 <meta name="twitter:card" content="summary">
 
@@ -117,7 +119,7 @@
   
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -130,6 +132,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">基础语法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#C%E5%92%8CC-%E5%8C%BA%E5%88%AB"><span class="nav-number">1.1.</span> <span class="nav-text">C和C++区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#static%E4%B8%8Econst%E5%85%B3%E9%94%AE%E5%AD%97%E3%80%81%E6%8C%87%E9%92%88%E5%B8%B8%E9%87%8F%E5%92%8C%E5%B8%B8%E9%87%8F%E6%8C%87%E9%92%88"><span class="nav-number">1.2.</span> <span class="nav-text">static与const关键字、指针常量和常量指针</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E6%9E%84%E4%BD%93%E5%92%8C%E7%B1%BB%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">1.3.</span> <span class="nav-text">结构体和类的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%97%E8%8A%82%E5%AF%B9%E9%BD%90"><span class="nav-number">1.4.</span> <span class="nav-text">字节对齐</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%97%E8%8A%82%E5%BA%8F-%E5%A4%A7%E7%AB%AF%E5%92%8C%E5%B0%8F%E7%AB%AF"><span class="nav-number">1.5.</span> <span class="nav-text">字节序: 大端和小端</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%87%E9%92%88%E5%92%8C%E5%BC%95%E7%94%A8"><span class="nav-number">1.6.</span> <span class="nav-text">指针和引用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#define%E3%80%81typedef%E3%80%81inline"><span class="nav-number">1.7.</span> <span class="nav-text">define、typedef、inline</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#extern-C"><span class="nav-number">1.8.</span> <span class="nav-text">extern C</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#volatile%E3%80%81explicit%E5%85%B3%E9%94%AE%E5%AD%97"><span class="nav-number">1.9.</span> <span class="nav-text">volatile、explicit关键字</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1"><span class="nav-number">2.</span> <span class="nav-text">面向对象</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%9A%84%E4%B8%89%E5%A4%A7%E7%89%B9%E6%80%A7"><span class="nav-number">2.1.</span> <span class="nav-text">面向对象的三大特性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E5%86%99%E3%80%81%E9%87%8D%E8%BD%BD%E3%80%81%E9%9A%90%E8%97%8F"><span class="nav-number">2.2.</span> <span class="nav-text">重写、重载、隐藏</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9D%99%E6%80%81%E5%A4%9A%E6%80%81%E4%B8%8E%E5%8A%A8%E6%80%81%E5%A4%9A%E6%80%81"><span class="nav-number">2.3.</span> <span class="nav-text">静态多态与动态多态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%99%9A%E5%87%BD%E6%95%B0%E5%AE%9E%E7%8E%B0%EF%BC%88%E8%99%9A%E5%87%BD%E6%95%B0%E8%A1%A8%E4%B8%8E%E8%99%9A%E6%8C%87%E9%92%88%EF%BC%89%E3%80%81%E7%BA%AF%E8%99%9A%E5%87%BD%E6%95%B0"><span class="nav-number">2.4.</span> <span class="nav-text">虚函数实现（虚函数表与虚指针）、纯虚函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E5%92%8C%E6%9E%90%E6%9E%84%E5%87%BD%E6%95%B0%EF%BC%8C%E6%98%AF%E5%90%A6%E5%8F%AF%E4%BB%A5%E4%B8%BA%E8%99%9A%E5%87%BD%E6%95%B0"><span class="nav-number">2.5.</span> <span class="nav-text">构造和析构函数，是否可以为虚函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%8F%B1%E5%BD%A2%E7%BB%A7%E6%89%BF%E3%80%81%E8%99%9A%E7%BB%A7%E6%89%BF"><span class="nav-number">2.6.</span> <span class="nav-text">菱形继承、虚继承</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86"><span class="nav-number">3.</span> <span class="nav-text">内存管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98%E3%80%81%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80"><span class="nav-number">3.1.</span> <span class="nav-text">虚拟内存、进程的内存布局</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#new%E5%92%8Cmalloc%E3%80%81delete%E5%92%8Cfree"><span class="nav-number">3.2.</span> <span class="nav-text">new和malloc、delete和free</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%B1%E6%8B%B7%E8%B4%9D%E5%92%8C%E6%B5%85%E6%8B%B7%E8%B4%9D"><span class="nav-number">3.3.</span> <span class="nav-text">深拷贝和浅拷贝</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F%E3%80%81%E6%A3%80%E6%B5%8B%E5%92%8C%E9%A2%84%E9%98%B2"><span class="nav-number">3.4.</span> <span class="nav-text">内存泄漏、检测和预防</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8E%E6%8C%87%E9%92%88%E5%92%8C%E7%A9%BA%E6%82%AC%E6%8C%87%E9%92%88%E3%80%81%E5%86%85%E5%AD%98%E9%94%99%E8%AF%AF%EF%BC%88coredump%E5%92%8Csegmentation-fault"><span class="nav-number">3.5.</span> <span class="nav-text">野指针和空悬指针、内存错误（coredump和segmentation fault)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%8E%B0%E4%BB%A3C"><span class="nav-number">4.</span> <span class="nav-text">现代C++</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E4%B8%AA%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88%EF%BC%8C%E5%90%84%E8%87%AA%E5%8E%9F%E7%90%86%E5%AE%9E%E7%8E%B0%EF%BC%8C%E6%98%AF%E5%90%A6%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8"><span class="nav-number">4.1.</span> <span class="nav-text">三个智能指针，各自原理实现，是否线程安全</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%A6%E5%80%BC%E5%92%8C%E5%8F%B3%E5%80%BC%E3%80%81%E5%8F%B3%E5%80%BC%E5%BC%95%E7%94%A8%E5%92%8C%E7%A7%BB%E5%8A%A8%E8%AF%AD%E4%B9%89%E3%80%81%E5%AE%8C%E7%BE%8E%E8%BD%AC%E5%8F%91"><span class="nav-number">4.2.</span> <span class="nav-text">左值和右值、右值引用和移动语义、完美转发</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lambda%E5%87%BD%E6%95%B0%EF%BC%8C%E6%8D%95%E8%8E%B7%E6%9C%BA%E5%88%B6"><span class="nav-number">4.3.</span> <span class="nav-text">lambda函数，捕获机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B1%BB%E5%9E%8B%E8%90%83%E5%8F%96"><span class="nav-number">4.4.</span> <span class="nav-text">类型萃取</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#nullptr%E4%B8%8ENULL"><span class="nav-number">4.5.</span> <span class="nav-text">nullptr与NULL</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#STL"><span class="nav-number">5.</span> <span class="nav-text">STL</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#STL%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E3%80%81%E5%85%AD%E5%A4%A7%E7%BB%84%E4%BB%B6"><span class="nav-number">5.1.</span> <span class="nav-text">STL基本概念、六大组件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vector"><span class="nav-number">5.2.</span> <span class="nav-text">vector</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%A9%E5%AE%B9%E6%9C%BA%E5%88%B6%EF%BC%8C%E5%A6%82%E4%BD%95%E9%98%B2%E6%AD%A2%E9%A2%91%E7%B9%81%E6%89%A9%E5%AE%B9%EF%BC%88reserve%E3%80%81allocator%EF%BC%89"><span class="nav-number">5.2.1.</span> <span class="nav-text">扩容机制，如何防止频繁扩容（reserve、allocator）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#size%E3%80%81resize%E3%80%81reserve%E3%80%81capacity%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">5.2.2.</span> <span class="nav-text">size、resize、reserve、capacity的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#vector%E5%8F%AF%E8%83%BD%E5%AF%BC%E8%87%B4%E5%85%B6%E8%BF%AD%E4%BB%A3%E5%99%A8%E5%A4%B1%E6%95%88%E7%9A%84%E6%93%8D%E4%BD%9C%E6%9C%89%E5%93%AA%E4%BA%9B"><span class="nav-number">5.2.3.</span> <span class="nav-text">vector可能导致其迭代器失效的操作有哪些</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#push-back%E5%92%8Cemplace-back"><span class="nav-number">5.2.4.</span> <span class="nav-text">push_back和emplace_back</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#map%E5%92%8Cunordered-map"><span class="nav-number">5.2.5.</span> <span class="nav-text">map和unordered_map</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#set"><span class="nav-number">5.2.6.</span> <span class="nav-text">set</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#deque%E5%92%8Clist"><span class="nav-number">5.2.7.</span> <span class="nav-text">deque和list</span></a></li></ol></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -225,7 +228,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-04-15 23:31:52" itemprop="dateModified" datetime="2026-04-15T23:31:52+08:00">2026-04-15</time>
+      <time title="修改时间：2026-06-24 23:32:13" itemprop="dateModified" datetime="2026-06-24T23:32:13+08:00">2026-06-24</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -246,7 +249,142 @@
     
     
     
-    <div class="post-body" itemprop="articleBody">
+    <div class="post-body" itemprop="articleBody"><h1 id="基础语法"><a href="#基础语法" class="headerlink" title="基础语法"></a>基础语法</h1><h2 id="C和C-区别"><a href="#C和C-区别" class="headerlink" title="C和C++区别"></a>C和C++区别</h2><p>C：过程式（Procedural）以函数为中心、数据与函数分离、通过结构体 + 函数模拟数据封装</p>
+<p>C++是C的超集，具备C的功能，并且引入了面向对象思想，引入了类这个概念。具备一些特性，例如虚函数、模版、C++ 在保持底层能力的同时，通过 RAII、模板和面向对象机制提升抽象能力，使其更适合大型工程系统，如游戏引擎、自动驾驶、机器人等。</p>
+<h2 id="static与const关键字、指针常量和常量指针"><a href="#static与const关键字、指针常量和常量指针" class="headerlink" title="static与const关键字、指针常量和常量指针"></a>static与const关键字、指针常量和常量指针</h2><p>static: 限制作用域与生命周期</p>
+<p>修饰全局变量（只能在文件内不使用，不能其他地方调用）、局部变量（函数内部，不会重新初始化，复用数值，在第一次调用函数后初始化、一致保留）、函数（只能在文件内使用该函数）</p>
+<p>类内：修饰变量（类共有）、修饰函数（类共有，不能使用非静态的成员）</p>
+<p>const: 限制是否可变</p>
+<p>修饰变量：变量不能修改值</p>
+<p>函数参数：函数内部不能修改</p>
+<p>返回值：返回的值不能够修改内容</p>
+<p>成员函数：放在成员函数后，成员变量值不能修改</p>
+<p>指针常量和常量指针</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> a = <span class="number">4</span>;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span>* p = &amp;a; <span class="comment">//修饰int，表示指向的值不可修改，为指针常量，无法通过指针修改变量值</span></span><br><span class="line"><span class="type">int</span>* <span class="type">const</span> p = &amp;a; <span class="comment">//修饰p，表示指针本省的值不可修改</span></span><br><span class="line"><span class="type">const</span> <span class="type">int</span>* <span class="type">const</span> p = &amp;a；</span><br></pre></td></tr></table></figure>
+
+<h2 id="结构体和类的区别"><a href="#结构体和类的区别" class="headerlink" title="结构体和类的区别"></a>结构体和类的区别</h2><p>C语言结构体只能使用POD类型，没有继承虚函数等机制。</p>
+<p>C++中结构体和类都具备继承机制</p>
+<p>访问权限: struct内部变量默认为public，class为private</p>
+<p>继承: struct继承默认使用共有继承，class默认使用私有继承</p>
+<h2 id="字节对齐"><a href="#字节对齐" class="headerlink" title="字节对齐"></a>字节对齐</h2><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/2501_93249729/article/details/159347139">https://blog.csdn.net/2501_93249729/article/details/159347139</a></p>
+<ol>
+<li>首地址规则： 结构体第一个成员的地址与结构体变量的起始地址相同（偏移量为0）。</li>
+<li>对齐规则： 从第二个成员开始，每个成员变量都要对齐到其“对齐数”的整数倍地址处。</li>
+</ol>
+<p>​     对齐数 &#x3D; 编译器默认对齐数与该成员自身大小的较小值。</p>
+<p>​     如果前一个成员结束后的地址不满足当前成员的对齐要求，编译器会在中间插入填充字节。</p>
+<ol start="3">
+<li>总大小规则： 结构体的总大小必须是该结构体中“最大对齐数”的整数倍。如果不满足，编译器会在结构体末尾填充字节。</li>
+</ol>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">__tt__</span> &#123;</span><br><span class="line">    <span class="type">char</span> a;</span><br><span class="line">    <span class="type">int</span> b;</span><br><span class="line">    <span class="type">long</span> c;</span><br><span class="line">    <span class="type">short</span> d;</span><br><span class="line">&#125;;  <span class="comment">// 64位24，32位16</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="字节序-大端和小端"><a href="#字节序-大端和小端" class="headerlink" title="字节序: 大端和小端"></a>字节序: 大端和小端</h2><p>高位字节存储在低地址处，低位字节存储在高地址处。例如，一个4字节的整数0x12345678，在大端字节序的系统中，内存布局如下（从左侧的低地址到右侧的高地址）</p>
+<p>一般个人PC使用小端</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">一个<span class="number">4</span>字节的整数<span class="number">0x12345678</span>，在大端字节序的系统中，内存布局如下（从左侧的低地址到右侧的高地址）：</span><br><span class="line"><span class="number">0x12</span> | <span class="number">0x34</span> | <span class="number">0x56</span> | <span class="number">0x78</span></span><br><span class="line"><span class="number">0x78</span> | <span class="number">0x56</span> | <span class="number">0x34</span> | <span class="number">0x12</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="指针和引用"><a href="#指针和引用" class="headerlink" title="指针和引用"></a>指针和引用</h2><p>指针是变量、用于存储地址位置。所有类型的指针变量的大小相同，4或8根据系统是32还是64有关。</p>
+<p>引用是别名，定义时必须初始化</p>
+<p>指针可以为nullptr，表示不指向任何变量。且可以修改其值，并且可以解应用修改指向变量的值</p>
+<h2 id="define、typedef、inline"><a href="#define、typedef、inline" class="headerlink" title="define、typedef、inline"></a>define、typedef、inline</h2><p>#define 宏定义，字符串直接替换，不涉及类型检查，需要注意操作符大小</p>
+<p>typedef 遵循 C++ 的作用域规则，可以受到命名空间、类等结构的作用域限制。typedef 通常用于定义复杂类型的别名，使代码更易读和易于维护</p>
+<p>typedef 可以与模板结合使用，但在 C++11 之后，推荐使用 using 关键字定义模板类型别名。</p>
+<p>inline 修饰函数，会检查类型。由编译器进行函数优化，是否内联取决于编译器的实现和优化策略。</p>
+<h2 id="extern-C"><a href="#extern-C" class="headerlink" title="extern C"></a>extern C</h2><p>对于 C++ 语言，<strong>由于需要支持重载</strong>，所以一个函数的链接名（Linkage Name）是由函数的名称、参数类型和返回值类型等信息组成的，<strong>用于在编译和链接时唯一标识该函数</strong>。</p>
+<p>使用 <code>extern &quot;C&quot;</code> 声明的函数或变量会采用 C 语言的链接规则，即符号的名称和调用约定与 C 语言相同。</p>
+<h2 id="volatile、explicit关键字"><a href="#volatile、explicit关键字" class="headerlink" title="volatile、explicit关键字"></a>volatile、explicit关键字</h2><p><code>volatile</code>是 C 语言中的一个关键字，用于修饰变量，表示该变量的值可能在任何时候被外部因素更改，例如硬件设备、操作系统或其他线程。</p>
+<p>在 C++ 中，<code>explicit</code> 通常用于构造函数的声明中，用于防止隐式转换。<br> 当将一个参数传递给构造函数时，如果构造函数声明中使用了 <code>explicit</code> 关键字，则只能使用显式转换进行转换，而不能进行隐式转换。</p>
+<h1 id="面向对象"><a href="#面向对象" class="headerlink" title="面向对象"></a>面向对象</h1><h2 id="面向对象的三大特性"><a href="#面向对象的三大特性" class="headerlink" title="面向对象的三大特性"></a>面向对象的三大特性</h2><p>封装、继承、多态。</p>
+<p>1封装：将客观事物封装成为抽象的类, 类把自己数据和方法进行隐藏，仅对外公开接口来和对象进行交互，防止外界干扰或不确定性访问。 2继承：指一个类（称为子类或派生类）可以从另一个类（称为父类或基类）中继承属性和行为的能力。通过继承，子类可以重用父类的代码，并且可以在不修改父类的情况下添加新的功能或修改已有的功能。继承使得代码具有层次性和可扩展性，能够建立起类之间的层次关系。  3多态：多态是指同一个操作作用于不同的对象时，可以有不同的解释和行为。多态性允许以统一的方式处理不同类型的对象，从而提高了代码的可扩展性和可维护性。在C++中，**多态性通常通过虚函数（virtual functions）来实现。**通过基类中定义虚函数，并在派生类中重新定义该函数，可以实现运行时的动态绑定。</p>
+<h2 id="重写、重载、隐藏"><a href="#重写、重载、隐藏" class="headerlink" title="重写、重载、隐藏"></a>重写、重载、隐藏</h2><p>1重载和重写是两种不同的概念，它们都用于实现多态性，但方式和使用场景有所不同。 2重载：在同一个类或命名空间中，声明多个同名函数， 但是参数列表不同。编译器根据参数的类型、数量或顺序来区分不同的函数。 3重写：重写发生在继承体系中，在子类中，声明一个与父类中虚函数具有相同名称、相同参数列表和相同返回类型的函数，并在子类函数前加上 override 关键字。 4区别： ●作用域：重载发生在同一个作用域内，而重写发生在继承体系中。 ●参数列表：对于重载的函数，参数列表必须不同；对于重写的函数，参数列表必须与被重写的函数完全相同。 ●返回类型：重载函数的返回类型可以不同，但重写函数的返回类型必须与被重写的函数相同（或与之兼容，C++中称为协变返回类型）。 ●虚函数：重写通常与虚函数一起使用，以实现<strong>运行时多态性</strong>；而重载是<strong>编译时多态性</strong>，由编译器在编译期间确定调用哪个函数。 ●关键字：重写函数可以使用 override 关键字，明确指出该函数是对父类虚函数的重写。</p>
+<h2 id="静态多态与动态多态"><a href="#静态多态与动态多态" class="headerlink" title="静态多态与动态多态"></a>静态多态与动态多态</h2><p>静态多态（编译时多态）：重载、模版</p>
+<p>动态多态（运行时多态）：虚函数</p>
+<p>1重载和重写是两种不同的概念，它们都用于实现多态性，但方式和使用场景有所不同。 2重载：在同一个类或命名空间中，声明多个同名函数， 但是参数列表不同。编译器根据参数的类型、数量或顺序来区分不同的函数。 3重写：重写发生在继承体系中，在子类中，声明一个与父类中虚函数具有相同名称、相同参数列表和相同返回类型的函数，并在子类函数前加上 override 关键字。 4区别： ●作用域：重载发生在同一个作用域内，而重写发生在继承体系中。 ●参数列表：对于重载的函数，参数列表必须不同；对于重写的函数，参数列表必须与被重写的函数完全相同。 ●返回类型：重载函数的返回类型可以不同，但重写函数的返回类型必须与被重写的函数相同（或与之兼容，C++中称为协变返回类型）。 ●虚函数：重写通常与虚函数一起使用，以实现<strong>运行时多态性</strong>；而重载是<strong>编译时多态性</strong>，由编译器在编译期间确定调用哪个函数。 ●关键字：重写函数可以使用 override 关键字，明确指出该函数是对父类虚函数的重写。</p>
+<h2 id="虚函数实现（虚函数表与虚指针）、纯虚函数"><a href="#虚函数实现（虚函数表与虚指针）、纯虚函数" class="headerlink" title="虚函数实现（虚函数表与虚指针）、纯虚函数"></a>虚函数实现（虚函数表与虚指针）、纯虚函数</h2><p>依赖虚函数表和虚函数指针</p>
+<p>1<strong>虚函数表的创建</strong>: 当一个类包含虚函数时，编译器会自动为这个类创建一个虚函数表。这个表是一个函数指针数组，每个指针指向一个虚函数的实现。 2<strong>虚函数表指针</strong>: 编译器会在对象的内存布局中添加一个隐式的虚函数表指针（通常是一个指向 vtable 的指针），这样每个对象都可以通过这个指针访问到类的虚函数表。 3<strong>虚函数的声明</strong>: 在类中声明虚函数时，可以使用 virtual 关键字。如果一个函数被声明为虚函数，编译器会在类的 vtable 中为这个函数分配一个入口。 4<strong>重写虚函数</strong>: 当从基类继承并创建派生类时，可以在派生类中重写基类的虚函数。重写的函数会替换掉 vtable 中对应的基类实现。 5<strong>动态绑定</strong>: 当通过基类指针或引用调用虚函数时，程序会使用对象的虚函数表指针来查找正确的函数实现。这个过程称为动态绑定或晚期绑定。 6<strong>调用虚函数</strong>: 程序运行时，当调用一个虚函数时，会先通过对象的虚函数表指针找到 vtable，然后在 vtable 中查找对应的函数指针，并调用该函数。</p>
+<p>简短来说，每个类都有一个虚表，里面有这个类的虚函数地址；每个对象都有指向它的类的虚表的指针，这个指针称为虚指针。 当调用虚函数时，编译器会调用对象的虚指针查找虚表，通过虚函数的地址来执行相应的虚函数。</p>
+<h2 id="构造和析构函数，是否可以为虚函数"><a href="#构造和析构函数，是否可以为虚函数" class="headerlink" title="构造和析构函数，是否可以为虚函数"></a>构造和析构函数，是否可以为虚函数</h2><p>构造函数不能是虚函数。</p>
+<p>○构造函数在对象创建时被调用，此时不涉及多态性。         </p>
+<p>○虚函数对应一个虚表，这个表存在对象的内存空间，如果此时构造函数是虚函数，对象还没实例化没有分配内存空间，也就无法调用；         </p>
+<p>○虚函数是用在信息不全的情况下，能使重载的函数使用。但构造函数本身就是要初始化对象，因此没必要是虚函数。 </p>
+<p>析构函数可以是虚函数。</p>
+<p>○虚析构函数可以在运行时实现多态性；         </p>
+<p>○如果基类的析构函数不是虚函数，当通过基类指针去删除派生类对象时，不会调用派生类的析构函数。可能会导致派生类的资源未被正确释放，从而造成资源泄漏</p>
+<h2 id="菱形继承、虚继承"><a href="#菱形继承、虚继承" class="headerlink" title="菱形继承、虚继承"></a>菱形继承、虚继承</h2><p><strong>菱形继承</strong>是面向对象编程中多继承的一种特殊情况，主要出现在一个类同时继承两个或多个子类，而这些子类又继承自同一个基类的场景。这种继承关系在类图中形成一个菱形结构，因此得名。</p>
+<p>菱形继承会引发以下两个主要问题：</p>
+<ol>
+<li><strong>数据冗余</strong>：派生类会从不同路径继承基类的多个副本，导致内存浪费和数据不一致。例如，基类的成员变量可能在派生类中存在多份，修改其中一个副本不会影响其他副本。</li>
+<li><strong>成员访问二义性</strong>：当派生类访问基类的成员时，编译器无法确定应该调用哪一个路径继承的成员，导致编译错误或警告。</li>
+</ol>
+<p>为了解决上述问题，C++ 提供了<strong>虚拟继承</strong>机制。通过虚拟继承，基类的多个副本被合并为一个共享实例，从而消除了数据冗余和二义性。</p>
+<h1 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h1><h2 id="虚拟内存、进程的内存布局"><a href="#虚拟内存、进程的内存布局" class="headerlink" title="虚拟内存、进程的内存布局"></a>虚拟内存、进程的内存布局</h2><p>.text代码段，.data段，.bss， 堆区、栈区、内核</p>
+<h2 id="new和malloc、delete和free"><a href="#new和malloc、delete和free" class="headerlink" title="new和malloc、delete和free"></a>new和malloc、delete和free</h2><p>总结来说，new和malloc都是动态内存分配的手段，但new提供了类型安全和构造&#x2F;析构的自动化，而malloc则提供了更底层的内存分配方式，需要手动管理构造和析构。在C++中，推荐使用new来分配对象，以保持类型安全和自动化的资源管理。</p>
+<p>总结来说，delete和free都是用来释放动态内存的，但它们分别用于C++和C语言中的内存管理。delete适用于C++对象，会自动调用析构函数；而free适用于C语言分配的内存，不涉及对象的析构。</p>
+<h2 id="深拷贝和浅拷贝"><a href="#深拷贝和浅拷贝" class="headerlink" title="深拷贝和浅拷贝"></a>深拷贝和浅拷贝</h2><p>浅拷贝：只复制对象的成员变量值。对于指针成员，复制的是地址本身，两个对象的指针指向同一块堆内存。</p>
+<p>深拷贝：为指针成员重新分配内存并复制内容，两个对象各自拥有独立的堆内存，互不影响。</p>
+<p>核心问题：浅拷贝导致两个对象共享同一块堆内存，任何一个对象析构时 <code>delete</code> 这块内存，另一个对象的指针就变成悬垂指针——再次 <code>delete</code> 就是双重释放，程序崩溃。</p>
+<h2 id="内存泄漏、检测和预防"><a href="#内存泄漏、检测和预防" class="headerlink" title="内存泄漏、检测和预防"></a>内存泄漏、检测和预防</h2><p>1<strong>如果程序的某一段代码在内存池中动态申请了一块内存而没有及时将其释放，就会导致那块内存一直处于被占用的状态而无法使用，造成了资源的浪费。<strong>内存泄漏并不是说物理上的消失掉了，是因为无法使用该区域，在外界看来这块内存就好像被泄漏了一样。 2什么操作会导致内存泄漏 ○忘记释放内存：使用 new 或 malloc 等分配内存后，没有使用 delete 或 free 释放内存。 ○子类继承父类时，没有将基类的析构函数定义为虚函数。 ○野指针：指针被赋值为 nullptr 或重新赋值后，丢失了对先前分配内存的引用，导致无法释放。 ○循环引用：在使用引用计数的智能指针（如 std::shared_ptr）时，循环引用会导致引用计数永远不会归零，从而无法释放内存。 ○使用不匹配的内存释放函数: 使用 delete 释放由 new[] 分配的内存，或使用 delete[] 释放由 new 分配的内存，这可能导致未定义行为。 ○资源未关闭：对于文件、网络连接等资源，如果没有正确关闭，虽然不直接导致内存泄漏，但会占用系统资源，可能导致资源耗尽。 3如何检测：使用工具如Valgrind、AddressSanitizer或Visual Studio的诊断工具来检测内存泄漏。 4如何避免 ○使用</strong>智能指针</strong>:优先使用 std::unique_ptr、std::shared_ptr 等智能指针来自动管理内存。 ○确保资源释放: 对于手动分配的内存，确保在不再需要时使用 delete 或 free 释放。 ○内存泄漏检测工具: 在开发和测试阶段，定期使用内存泄漏检测工具检查程序。</p>
+<h2 id="野指针和空悬指针、内存错误（coredump和segmentation-fault"><a href="#野指针和空悬指针、内存错误（coredump和segmentation-fault" class="headerlink" title="野指针和空悬指针、内存错误（coredump和segmentation fault)"></a>野指针和空悬指针、内存错误（coredump和segmentation fault)</h2><p>野指针是指“<strong>指向已经被释放的或无效的内存地址的指针”</strong>。在 C 和 C++ 这类允许直接操作内存地址的语言中，如果指针没有被正确初始化，或者指针所指向的内存已经被释放，那么这个指针就成为了野指针。使用野指针可能会导致程序崩溃、数据损坏或者其他一些不可预测的行为。</p>
+<p>垂悬指针是指指针指向的内容已被释放，指针指向的对象的生命周期已结束。</p>
+<h1 id="现代C"><a href="#现代C" class="headerlink" title="现代C++"></a>现代C++</h1><h2 id="三个智能指针，各自原理实现，是否线程安全"><a href="#三个智能指针，各自原理实现，是否线程安全" class="headerlink" title="三个智能指针，各自原理实现，是否线程安全"></a>三个智能指针，各自原理实现，是否线程安全</h2><p>智能指针是C++中用来自动管理动态分配内存的一种模板类，维护着一个指向动态分配对象的指针，并在智能指针对象被销毁时，自动释放该内存，从而避免内存泄漏。 C++有以下几种智能指针： </p>
+<p>●<strong>std::unique_ptr</strong>：独占式拥有指针，保证同一时间只有一个unique_ptr指向特定内存，适用于不需要共享所有权的场景，如栈上对象的管理。 ●<strong>std::shared_ptr</strong>：多个shared_ptr可以共享同一内存，使用引用计数机制来管理内存的生命周期，适用于多个对象需要共享同一个资源的场景。 ●<strong>std::weak_ptr</strong>：弱引用，用于解决shared_ptr可能导致的循环引用问题，它不拥有所指向的对象。 <strong>智能指针的实现原理是什么</strong> 1std::unique_ptr ○unique_ptr代表独占所有权的智能指针，同一时间只能有一个unique_ptr实例指向特定资源。 ○它通过析构函数来管理资源的释放。当unique_ptr超出作用域时，会自动调用删除操作符来释放其指向的内存。 ○std::unique_ptr 通过<strong>删除复制构造函数和复制赋值运算符来确保所有权的唯一性</strong>，但提供移动构造函数和移动赋值运算符，允许所有权的转移。 2std::shared_ptr ○shared_ptr允许多个指针实例共享对同一资源的所有权，使用<strong>引用计数机制</strong>来跟踪有多少个shared_ptr指向同一资源。 ○内部维护一个控制块，通常包含引用计数和资源的原始指针。每当创建一个新的shared_ptr或将一个shared_ptr赋值给另一个时，引用计数增加。 ○当shared_ptr被销毁或通过标准库提供的reset成员函数重置时，引用计数减少。当引用计数降到零时，控制块会释放资源并自我销毁。 3std::weak_ptr ○std::weak_ptr 是一种不拥有对象的智能指针，它观察 std::shared_ptr 管理的对象，但不增加引用计数。 ○它用于解决 std::shared_ptr 之间可能产生的循环引用问题，因为循环引用会导致引用计数永远不会达到零，从而造成内存泄漏。</p>
+<h2 id="左值和右值、右值引用和移动语义、完美转发"><a href="#左值和右值、右值引用和移动语义、完美转发" class="headerlink" title="左值和右值、右值引用和移动语义、完美转发"></a>左值和右值、右值引用和移动语义、完美转发</h2><p><strong>左值</strong>是指在内存中有确定地址的对象，可以通过引用或取地址符 <em>&amp;</em> 操作。左值通常是变量或持久存在的对象。</p>
+<p><strong>右值</strong>是临时存在的值，通常是表达式的结果或字面量。右值不能取地址，生命周期短暂。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> x = <span class="number">10</span>; <span class="comment">// x 是左值</span></span><br><span class="line"><span class="type">int</span>* p = &amp;x; <span class="comment">// 可以取地址</span></span><br><span class="line"><span class="type">int</span> y = x + <span class="number">5</span>; <span class="comment">// x + 5 是右值</span></span><br><span class="line">y = <span class="number">10</span>; <span class="comment">// 10 是右值</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="lambda函数，捕获机制"><a href="#lambda函数，捕获机制" class="headerlink" title="lambda函数，捕获机制"></a>lambda函数，捕获机制</h2><p>在 C++ 中，<strong>lambda 函数</strong>是一种轻量级、匿名的函数对象，可以在定义时直接捕获外部作用域的变量，常用于需要回调、算法传参或临时函数对象的场景。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">auto</span> lambda = [](<span class="type">int</span> x, <span class="type">int</span> y) -&gt; <span class="type">int</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> x + y;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="type">int</span> result = <span class="built_in">lambda</span>(<span class="number">2</span>, <span class="number">3</span>); <span class="comment">// 5</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">[]：捕获外部变量的方式（可以为空）。 </span></span><br><span class="line"><span class="comment">(参数列表)：传入 lambda 的参数。 </span></span><br><span class="line"><span class="comment">-&gt; 返回类型：可选，通常编译器可以推导。 </span></span><br><span class="line"><span class="comment">&#123;&#125;：函数体。 </span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+<p>Lambda 可以捕获外部作用域的变量，让 lambda 内部访问这些变量：</p>
+<p><strong>值捕获</strong> <strong><code>[=]</code>****\引用捕获</strong> **<code>[&amp;]</code>****\指定变量捕获\隐式与显式混合**</p>
+<p><strong>可变 lambda (<strong><strong><code>mutable</code></strong></strong>)</strong></p>
+<h2 id="类型萃取"><a href="#类型萃取" class="headerlink" title="类型萃取"></a>类型萃取</h2><p>在C++中，类型萃取（type_traits）是一种编译时技术，用于在编译期间获取和操作类型的信息。</p>
+<h2 id="nullptr与NULL"><a href="#nullptr与NULL" class="headerlink" title="nullptr与NULL"></a>nullptr与NULL</h2><h1 id="STL"><a href="#STL" class="headerlink" title="STL"></a>STL</h1><h2 id="STL基本概念、六大组件"><a href="#STL基本概念、六大组件" class="headerlink" title="STL基本概念、六大组件"></a>STL基本概念、六大组件</h2><p>STL是指标准模板库（<code>Standard Template Library</code>），是C++区别于C语言的特征之一。</p>
+<p>六大部分分别是容器（<code>container</code>）、迭代器（<code>iterator</code>）、适配器（<code>adaptor</code>）、分配器（<code>allocator</code>）、仿函数（<code>functor</code>）和算法（<code>algorithm</code>）。</p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/614287445">知乎文章参考</a></p>
+<h2 id="vector"><a href="#vector" class="headerlink" title="vector"></a>vector</h2><h3 id="扩容机制，如何防止频繁扩容（reserve、allocator）"><a href="#扩容机制，如何防止频繁扩容（reserve、allocator）" class="headerlink" title="扩容机制，如何防止频繁扩容（reserve、allocator）"></a>扩容机制，如何防止频繁扩容（reserve、allocator）</h3><p>当向vector中插入元素时，如果元素有效个数size与空间容量capacity相等时，vector内部会触发扩容机制：<strong>开辟新空间，拷贝，释放旧空间。1.5倍或者2倍扩容。</strong></p>
+<p>防止扩容方法</p>
+<ol>
+<li><p>reserve， 预先分配大小，保证后续不会触发扩容。（不改变size大小，不构造元素，只分配底层缓冲区）</p>
+<p><strong>与resize区别：</strong>（直接改变size大小，如果 <code>n &gt; size()</code>：新增元素会默认构造（或使用提供的默认值）；如果 <code>n &lt; size()</code>：末尾元素被销毁）</p>
+</li>
+<li><p>修改allocator默认内存分配方式</p>
+</li>
+</ol>
+<h3 id="size、resize、reserve、capacity的区别"><a href="#size、resize、reserve、capacity的区别" class="headerlink" title="size、resize、reserve、capacity的区别"></a><strong>size、resize、reserve、capacity的区别</strong></h3><h3 id="vector可能导致其迭代器失效的操作有哪些"><a href="#vector可能导致其迭代器失效的操作有哪些" class="headerlink" title="vector可能导致其迭代器失效的操作有哪些"></a><strong>vector可能导致其迭代器失效的操作有哪些</strong></h3><h3 id="push-back和emplace-back"><a href="#push-back和emplace-back" class="headerlink" title="push_back和emplace_back"></a>push_back和emplace_back</h3><p>push_back：将一个 <strong>已经存在的对象</strong> 拷贝或移动到容器末尾。 </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">v.<span class="built_in">push_back</span>(obj);       <span class="comment">// 拷贝 obj</span></span><br><span class="line">v.<span class="built_in">push_back</span>(std::<span class="built_in">move</span>(obj)); <span class="comment">// 移动 obj</span></span><br><span class="line"><span class="comment">/* 需要对象先构造好，再拷贝或移动到容器。 对临时对象，可以使用移动语义减少拷贝。对于复杂对象，如果没有移动构造函数，会进行拷贝，可能有性能开销。*/</span></span><br></pre></td></tr></table></figure>
+
+<p>emplace_back: 在容器末尾 <strong>原地构造元素</strong>，直接调用构造函数，避免额外拷贝&#x2F;移动。 </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">v.<span class="built_in">emplace_back</span>(args...);  <span class="comment">// 直接传递构造函数参数</span></span><br><span class="line"><span class="comment">/* 支持直接传递构造函数参数。对复杂对象效率更高，因为避免了临时对象的创建和拷贝/移动。语义上等价于“直接在容器内部创建对象”。*/</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="map和unordered-map"><a href="#map和unordered-map" class="headerlink" title="map和unordered_map"></a>map和unordered_map</h3><p>map有序O(logN)，空间占用率高、unordered_map无序O(1)，建表费时</p>
+<p>map底层: 红黑树（红黑树是非严格平衡的二叉搜索树，而AVL是严格平衡二叉搜索树）</p>
+<p>unordered_map底层：Hash</p>
+<p>hash解决冲突方法</p>
+<ol>
+<li>链地址法</li>
+<li>开放寻址法 （线性探查、二次探查、双重哈希）</li>
+<li>再哈希法（容量增加时，重新计算所有元素的哈希值并放入新的桶中）</li>
+</ol>
+<h3 id="set"><a href="#set" class="headerlink" title="set"></a>set</h3><ul>
+<li>set是一种关联式容器，其特性如下：<ul>
+<li>set以RBTree作为底层容器</li>
+<li>所得元素的只有key没有value，value就是key</li>
+<li>不允许出现键值重复</li>
+<li>所有的元素都会被自动排序</li>
+<li>不能通过迭代器来改变set的值，因为set的值就是键，set的迭代器是const的</li>
+</ul>
+</li>
+<li>map和set一样是关联式容器，其特性如下：<ul>
+<li>map以RBTree作为底层容器</li>
+<li>所有元素都是键+值存在</li>
+<li>不允许键重复</li>
+<li>所有元素是通过键进行自动排序的</li>
+<li>map的键是不能修改的，但是其键对应的值是可以修改的</li>
+</ul>
+</li>
+</ul>
+<p>综上所述，map和set<strong>底层实现</strong>都是红黑树；map和set的<strong>区别</strong>在于map的值不作为键，键和值是分开的。</p>
+<h3 id="deque和list"><a href="#deque和list" class="headerlink" title="deque和list"></a>deque和list</h3>
     </div>
 
     
