@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width">
-<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
 
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
@@ -18,7 +17,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"alexw914.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.23.2","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"default"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"alexw914.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.23.2","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"default"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
 
     <meta name="description" content="这篇文章整理模型压缩与量化相关的核心知识点，重点包括图优化、QAT、PTQ、量化细节和不同部署框架中的落地方式。 1. 模型压缩与图优化在真正进入量化之前，通常先做计算图层面的优化。这样可以减少冗余算子，也更容易发现性能瓶颈。 1.1 算子耗时分析可以先用框架或推理引擎的 profiling 功能定位瓶颈，例如：  onnxruntime 中开启 enable_profiling&#x3D;true 查看每">
 <meta property="og:type" content="article">
@@ -28,7 +27,7 @@
 <meta property="og:description" content="这篇文章整理模型压缩与量化相关的核心知识点，重点包括图优化、QAT、PTQ、量化细节和不同部署框架中的落地方式。 1. 模型压缩与图优化在真正进入量化之前，通常先做计算图层面的优化。这样可以减少冗余算子，也更容易发现性能瓶颈。 1.1 算子耗时分析可以先用框架或推理引擎的 profiling 功能定位瓶颈，例如：  onnxruntime 中开启 enable_profiling&#x3D;true 查看每">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-03-18T14:38:32.000Z">
-<meta property="article:modified_time" content="2026-09-07T12:07:26.944Z">
+<meta property="article:modified_time" content="2026-11-25T16:30:46.457Z">
 <meta property="article:tag" content="模型优化">
 <meta name="twitter:card" content="summary">
 
@@ -107,7 +106,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/home" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">15</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">5</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">13</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/home" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Articles<span class="badge">4</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">13</span></a></li>
   </ul>
 </nav>
 
@@ -122,10 +121,10 @@
     <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
-          文章目录
+          Table of Contents
         </li>
         <li class="sidebar-nav-overview">
-          站点概览
+          Overview
         </li>
       </ul>
 
@@ -210,7 +209,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          模型优化<a href="https://github.com/alexw914/hexo-blog/tree/main/source/_posts/_posts/%E6%A8%A1%E5%9E%8B%E9%87%8F%E5%8C%96.md" class="post-edit-link" title="编辑" rel="noopener" target="_blank"><i class="fa fa-pen-nib"></i></a>
+          模型优化<a href="https://github.com/alexw914/hexo-blog/tree/main/source/_posts/_posts/%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2/%E6%A8%A1%E5%9E%8B%E9%87%8F%E5%8C%96.md" class="post-edit-link" title="编辑" rel="noopener" target="_blank"><i class="fa fa-pen-nib"></i></a>
         </h1>
 
         <div class="post-meta-container">
@@ -228,7 +227,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-09-07 20:07:26" itemprop="dateModified" datetime="2026-09-07T20:07:26+08:00">2026-09-07</time>
+      <time title="修改时间：2026-11-26 00:30:46" itemprop="dateModified" datetime="2026-11-26T00:30:46+08:00">2026-11-26</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -452,8 +451,8 @@
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2026/03/18/%E6%8C%87%E4%BB%A4%E9%9B%86%E4%BC%98%E5%8C%96/" rel="next" title="指令集优化">
-                  指令集优化 <i class="fa fa-angle-right"></i>
+                <a href="/2026/03/18/C++/" rel="next" title="C++">
+                  C++ <i class="fa fa-angle-right"></i>
                 </a>
             </div>
           </div>
