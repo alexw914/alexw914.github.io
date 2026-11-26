@@ -1286,7 +1286,7 @@ pre code {
     transition: all 0.2s ease-in-out;
   }
   .links-of-author a::before {
-    background: #fff7b6;
+    background: #39d718;
     display: inline-block;
     margin-right: 3px;
     transform: translateY(-2px);
@@ -2762,17 +2762,6 @@ body {
 .sidebar-nav,
 .site-overview-wrap {
   font-family: var(--card-font);
-}
-main:has(.blog-home) .sidebar-nav {
-  height: auto;
-  visibility: visible;
-}
-main:has(.blog-home) .sidebar-nav .sidebar-nav-toc {
-  display: none;
-}
-main:has(.blog-home) .sidebar-nav .sidebar-nav-overview {
-  cursor: default;
-  margin-left: 0;
 }
 .blog-home h1,
 .blog-home-summary {
