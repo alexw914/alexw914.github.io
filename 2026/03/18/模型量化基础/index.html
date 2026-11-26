@@ -22,20 +22,20 @@
     <meta name="description" content="这篇文章整理模型压缩与量化相关的核心知识点，重点包括图优化、QAT、PTQ、量化细节和不同部署框架中的落地方式。 1. 模型压缩与图优化在真正进入量化之前，通常先做计算图层面的优化。这样可以减少冗余算子，也更容易发现性能瓶颈。 1.1 算子耗时分析可以先用框架或推理引擎的 profiling 功能定位瓶颈，例如：  onnxruntime 中开启 enable_profiling&#x3D;true 查看每">
 <meta property="og:type" content="article">
 <meta property="og:title" content="模型优化">
-<meta property="og:url" content="https://alexw914.github.io/2026/03/18/%E6%A8%A1%E5%9E%8B%E9%87%8F%E5%8C%96/index.html">
+<meta property="og:url" content="https://alexw914.github.io/2026/03/18/%E6%A8%A1%E5%9E%8B%E9%87%8F%E5%8C%96%E5%9F%BA%E7%A1%80/index.html">
 <meta property="og:site_name" content="Alex Tech Garden">
 <meta property="og:description" content="这篇文章整理模型压缩与量化相关的核心知识点，重点包括图优化、QAT、PTQ、量化细节和不同部署框架中的落地方式。 1. 模型压缩与图优化在真正进入量化之前，通常先做计算图层面的优化。这样可以减少冗余算子，也更容易发现性能瓶颈。 1.1 算子耗时分析可以先用框架或推理引擎的 profiling 功能定位瓶颈，例如：  onnxruntime 中开启 enable_profiling&#x3D;true 查看每">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-03-18T14:38:32.000Z">
-<meta property="article:modified_time" content="2026-11-26T03:05:31.734Z">
+<meta property="article:modified_time" content="2026-11-26T08:13:51.655Z">
 <meta property="article:tag" content="模型优化">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://alexw914.github.io/2026/03/18/%E6%A8%A1%E5%9E%8B%E9%87%8F%E5%8C%96/">
+<link rel="canonical" href="https://alexw914.github.io/2026/03/18/%E6%A8%A1%E5%9E%8B%E9%87%8F%E5%8C%96%E5%9F%BA%E7%A1%80/">
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://alexw914.github.io/2026/03/18/%E6%A8%A1%E5%9E%8B%E9%87%8F%E5%8C%96/","path":"2026/03/18/模型量化/","title":"模型优化"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://alexw914.github.io/2026/03/18/%E6%A8%A1%E5%9E%8B%E9%87%8F%E5%8C%96%E5%9F%BA%E7%A1%80/","path":"2026/03/18/模型量化基础/","title":"模型优化"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>模型优化 | Alex Tech Garden</title>
@@ -65,7 +65,7 @@
 
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/quicklink/3.0.1/quicklink.umd.js" integrity="sha256-44BednzIpUeQJcY8qtLyarFu0UCCTbgmWOvaoehiFQQ=" crossorigin="anonymous" defer></script>
-  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":3000,"priority":true,"url":"https://alexw914.github.io/2026/03/18/%E6%A8%A1%E5%9E%8B%E9%87%8F%E5%8C%96/"}</script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":3000,"priority":true,"url":"https://alexw914.github.io/2026/03/18/%E6%A8%A1%E5%9E%8B%E9%87%8F%E5%8C%96%E5%9F%BA%E7%A1%80/"}</script>
   <script src="/js/third-party/quicklink.js" defer></script>
 
   <noscript>
@@ -106,7 +106,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/home" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">4</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">13</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/home" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">4</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">14</span></a></li>
   </ul>
 </nav>
 
@@ -191,7 +191,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://alexw914.github.io/2026/03/18/%E6%A8%A1%E5%9E%8B%E9%87%8F%E5%8C%96/">
+    <link itemprop="mainEntityOfPage" href="https://alexw914.github.io/2026/03/18/%E6%A8%A1%E5%9E%8B%E9%87%8F%E5%8C%96%E5%9F%BA%E7%A1%80/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/c33020ba-84ad-4eac-ac1a-2c132ca9d255.gif">
@@ -209,7 +209,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          模型优化<a href="https://github.com/alexw914/hexo-blog/tree/main/source/_posts/_posts/%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2/%E6%A8%A1%E5%9E%8B%E9%87%8F%E5%8C%96.md" class="post-edit-link" title="编辑" rel="noopener" target="_blank"><i class="fa fa-pen-nib"></i></a>
+          模型优化<a href="https://github.com/alexw914/hexo-blog/tree/main/source/_posts/_posts/%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2%E4%BC%98%E5%8C%96/%E6%A8%A1%E5%9E%8B%E9%87%8F%E5%8C%96%E5%9F%BA%E7%A1%80.md" class="post-edit-link" title="编辑" rel="noopener" target="_blank"><i class="fa fa-pen-nib"></i></a>
         </h1>
 
         <div class="post-meta-container">
@@ -227,7 +227,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-11-26 11:05:31" itemprop="dateModified" datetime="2026-11-26T11:05:31+08:00">2026-11-26</time>
+      <time title="修改时间：2026-11-26 16:13:51" itemprop="dateModified" datetime="2026-11-26T16:13:51+08:00">2026-11-26</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -235,7 +235,7 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2/" itemprop="url" rel="index"><span itemprop="name">模型部署</span></a>
+          <a href="/categories/%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2%E4%BC%98%E5%8C%96/" itemprop="url" rel="index"><span itemprop="name">模型部署优化</span></a>
         </span>
     </span>
 

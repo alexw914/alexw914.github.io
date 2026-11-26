@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap&subset=latin,latin-ext">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"alexw914.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.23.2","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":"default"},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="在视觉模型的 TensorRT INT8 部署实践中，量化带来的影响往往不止于 mAP 或 Top-1 准确率的轻微波动——更隐蔽也更棘手的问题是置信度（Score）分布偏移：整体分数偏高或偏低、灰区样本跨阈值翻转、检测框几何漂移叠加 NMS 连锁效应，都会导致线上原有置信度阈值失效。 本文分别在**图像分类（Cls）与目标检测（Detect）**两个视觉任务上开展多组对比实验，涵盖业务数据集与开">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PTQ、QAT 与 QAD 对比分析">
+<meta property="og:url" content="https://alexw914.github.io/2026/11/26/PTQ%E3%80%81QAT%E4%B8%8EQAD%E5%88%86%E6%9E%90%E5%AE%9E%E9%AA%8C/index.html">
+<meta property="og:site_name" content="Alex Tech Garden">
+<meta property="og:description" content="在视觉模型的 TensorRT INT8 部署实践中，量化带来的影响往往不止于 mAP 或 Top-1 准确率的轻微波动——更隐蔽也更棘手的问题是置信度（Score）分布偏移：整体分数偏高或偏低、灰区样本跨阈值翻转、检测框几何漂移叠加 NMS 连锁效应，都会导致线上原有置信度阈值失效。 本文分别在**图像分类（Cls）与目标检测（Detect）**两个视觉任务上开展多组对比实验，涵盖业务数据集与开">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://alexw914.github.io/images/%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2%E4%BC%98%E5%8C%96/PTQ%E3%80%81QAT%E4%B8%8EQAD%E5%AF%B9%E6%AF%94%E5%88%86%E6%9E%90/ptq_det_4way_comparison.png">
+<meta property="og:image" content="https://alexw914.github.io/images/%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2%E4%BC%98%E5%8C%96/PTQ%E3%80%81QAT%E4%B8%8EQAD%E5%AF%B9%E6%AF%94%E5%88%86%E6%9E%90/qat_cls_test.png">
+<meta property="og:image" content="https://alexw914.github.io/images/%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2%E4%BC%98%E5%8C%96/PTQ%E3%80%81QAT%E4%B8%8EQAD%E5%AF%B9%E6%AF%94%E5%88%86%E6%9E%90/qat_det_4way_comparison.png">
+<meta property="og:image" content="https://alexw914.github.io/images/%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2%E4%BC%98%E5%8C%96/PTQ%E3%80%81QAT%E4%B8%8EQAD%E5%AF%B9%E6%AF%94%E5%88%86%E6%9E%90/det_fp32_vs_qat_vs_qad_ge025.png">
+<meta property="og:image" content="https://alexw914.github.io/images/%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2%E4%BC%98%E5%8C%96/PTQ%E3%80%81QAT%E4%B8%8EQAD%E5%AF%B9%E6%AF%94%E5%88%86%E6%9E%90/food101_cls_score_ge025.png">
+<meta property="og:image" content="https://alexw914.github.io/images/%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2%E4%BC%98%E5%8C%96/PTQ%E3%80%81QAT%E4%B8%8EQAD%E5%AF%B9%E6%AF%94%E5%88%86%E6%9E%90/voc0712_det_score_ge025.png">
+<meta property="article:published_time" content="2026-11-26T07:20:00.000Z">
+<meta property="article:modified_time" content="2026-11-26T08:13:51.655Z">
+<meta property="article:tag" content="模型量化">
+<meta property="article:tag" content="QAT">
+<meta property="article:tag" content="PTQ">
+<meta property="article:tag" content="QAD">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://alexw914.github.io/images/%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2%E4%BC%98%E5%8C%96/PTQ%E3%80%81QAT%E4%B8%8EQAD%E5%AF%B9%E6%AF%94%E5%88%86%E6%9E%90/ptq_det_4way_comparison.png">
+
+
+<link rel="canonical" href="https://alexw914.github.io/2026/11/26/PTQ%E3%80%81QAT%E4%B8%8EQAD%E5%88%86%E6%9E%90%E5%AE%9E%E9%AA%8C/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://alexw914.github.io/2026/11/26/PTQ%E3%80%81QAT%E4%B8%8EQAD%E5%88%86%E6%9E%90%E5%AE%9E%E9%AA%8C/","path":"2026/11/26/PTQ、QAT与QAD分析实验/","title":"PTQ、QAT 与 QAD 对比分析"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>PTQ、QAT 与 QAD 对比分析 | Alex Tech Garden</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/quicklink/3.0.1/quicklink.umd.js" integrity="sha256-44BednzIpUeQJcY8qtLyarFu0UCCTbgmWOvaoehiFQQ=" crossorigin="anonymous" defer></script>
+  <script class="next-config" data-name="quicklink" type="application/json">{"enable":true,"home":true,"archive":true,"delay":true,"timeout":3000,"priority":true,"url":"https://alexw914.github.io/2026/11/26/PTQ%E3%80%81QAT%E4%B8%8EQAD%E5%88%86%E6%9E%90%E5%AE%9E%E9%AA%8C/"}</script>
+  <script src="/js/third-party/quicklink.js" defer></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Alex Tech Garden</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">About C++/Python and AI</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/home" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">4</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">14</span></a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81PTQ-%E5%B8%A6%E6%9D%A5%E7%9A%84-Score-%E5%81%8F%E7%A7%BB"><span class="nav-text">一、PTQ 带来的 Score 偏移</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E4%B8%9A%E5%8A%A1%E6%95%B0%E6%8D%AE%E5%AE%9E%E9%AA%8C%EF%BC%9A%E4%BB%8EQAT-%E5%88%B0-QAD"><span class="nav-text">二、业务数据实验：从QAT 到 QAD</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E6%99%AE%E9%80%9A-QAT-%E6%95%88%E6%9E%9C%E5%8F%8A%E5%B1%80%E9%99%90%EF%BC%88backbone-auto-full-%E8%8C%83%E5%9B%B4%E7%AD%96%E7%95%A5%E5%AF%B9%E6%AF%94%EF%BC%89"><span class="nav-text">2.1 普通 QAT 效果及局限（backbone &#x2F; auto &#x2F; full 范围策略对比）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E5%85%A8%E9%87%8F-QAD-%E7%9A%84%E5%88%86%E6%95%B0%E5%AF%B9%E9%BD%90"><span class="nav-text">2.2 全量 QAD 的分数对齐</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E5%BC%80%E6%BA%90%E6%A0%87%E5%87%86%E6%95%B0%E6%8D%AE%E9%9B%86%E5%AF%B9%E7%85%A7%E9%AA%8C%E8%AF%81%E4%B8%8E%E6%95%B0%E6%8D%AE%E6%9C%AC%E8%BA%AB%E5%AF%B9%E5%81%8F%E7%A7%BB%E7%9A%84%E5%BD%B1%E5%93%8D"><span class="nav-text">三、开源标准数据集对照验证与数据本身对偏移的影响</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E5%BC%80%E6%BA%90%E5%88%86%E7%B1%BB%EF%BC%88Cls%EF%BC%89%EF%BC%9AFood-101-ResNet18%EF%BC%88101-%E7%B1%BB%EF%BC%8C25-250-test-%E5%9B%BE%EF%BC%8C448%C3%97448%EF%BC%89"><span class="nav-text">3.1 开源分类（Cls）：Food-101 ResNet18（101 类，25,250 test 图，448×448）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E5%BC%80%E6%BA%90%E6%A3%80%E6%B5%8B%EF%BC%88Detect%EF%BC%89%EF%BC%9AVOC0712-YOLOv8s%EF%BC%8820-%E7%B1%BB%EF%BC%8C4-952-test-%E5%9B%BE%EF%BC%8C1280%C3%971280%EF%BC%89"><span class="nav-text">3.2 开源检测（Detect）：VOC0712 YOLOv8s（20 类，4,952 test 图，1280×1280）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-%E6%95%B0%E6%8D%AE%E6%9C%AC%E8%BA%AB%E5%AF%B9-Score-%E5%81%8F%E7%A7%BB%E7%9A%84%E5%BD%B1%E5%93%8D%EF%BC%9A%E4%B8%9A%E5%8A%A1%E6%95%B0%E6%8D%AE%E9%9B%86-vs-%E5%BC%80%E6%BA%90%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="nav-text">3.3 数据本身对 Score 偏移的影响：业务数据集 vs 开源数据集</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E6%A0%B9%E5%9B%A0%E5%88%86%E6%9E%90%E3%80%81%E9%80%89%E5%9E%8B%E5%BB%BA%E8%AE%AE%E4%B8%8E%E6%96%B9%E6%A1%88%E5%AF%B9%E6%AF%94"><span class="nav-text">四、根因分析、选型建议与方案对比</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-%E4%BA%A7%E7%94%9F-Score-%E5%81%8F%E7%A7%BB%E7%9A%84%E4%BA%94%E5%A4%A7%E6%A0%B8%E5%BF%83%E6%A0%B9%E5%9B%A0"><span class="nav-text">4.1 产生 Score 偏移的五大核心根因</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-%E7%BC%93%E8%A7%A3%E7%AD%96%E7%95%A5%E4%B8%8E-backbone-auto-full-%E9%80%89%E5%9E%8B%E5%BB%BA%E8%AE%AE"><span class="nav-text">4.2 缓解策略与 backbone &#x2F; auto &#x2F; full 选型建议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-PTQ%E3%80%81%E5%B1%80%E9%83%A8-%E6%B7%B7%E5%90%88-PTQ%E3%80%81%E6%99%AE%E9%80%9A-QAT-%E4%B8%8E-QAD-%E7%BB%BC%E5%90%88%E5%AF%B9%E6%AF%94"><span class="nav-text">4.3 PTQ、局部&#x2F;混合 PTQ、普通 QAT 与 QAD 综合对比</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-%E5%B0%8F%E7%BB%93"><span class="nav-text">4.4 小结</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt=""
+      src="/images/c33020ba-84ad-4eac-ac1a-2c132ca9d255.gif">
+  <p class="site-author-name" itemprop="name"></p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/alexw914" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;alexw914" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:lwu914@icloud.com" title="E-Mail → mailto:lwu914@icloud.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://x.com/lwu914" title="Twitter → https:&#x2F;&#x2F;x.com&#x2F;lwu914" rel="noopener me" target="_blank"><i class="fab fa-twitter fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.youtube.com/" title="YouTube → https:&#x2F;&#x2F;www.youtube.com" rel="noopener me" target="_blank"><i class="fab fa-youtube fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/" title="Weibo → https:&#x2F;&#x2F;weibo.com" rel="noopener me" target="_blank"><i class="fab fa-weibo fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/" title="FB Page → https:&#x2F;&#x2F;www.facebook.com" rel="noopener me" target="_blank"><i class="fab fa-facebook fa-fw"></i></a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://alexw914.github.io/2026/11/26/PTQ%E3%80%81QAT%E4%B8%8EQAD%E5%88%86%E6%9E%90%E5%AE%9E%E9%AA%8C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/c33020ba-84ad-4eac-ac1a-2c132ca9d255.gif">
+      <meta itemprop="name" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alex Tech Garden">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="PTQ、QAT 与 QAD 对比分析 | Alex Tech Garden">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          PTQ、QAT 与 QAD 对比分析<a href="https://github.com/alexw914/hexo-blog/tree/main/source/_posts/_posts/%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2%E4%BC%98%E5%8C%96/PTQ%E3%80%81QAT%E4%B8%8EQAD%E5%88%86%E6%9E%90%E5%AE%9E%E9%AA%8C.md" class="post-edit-link" title="编辑" rel="noopener" target="_blank"><i class="fa fa-pen-nib"></i></a>
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2026-11-26 15:20:00 / 修改时间：16:13:51" itemprop="dateCreated datePublished" datetime="2026-11-26T15:20:00+08:00">2026-11-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2%E4%BC%98%E5%8C%96/" itemprop="url" rel="index"><span itemprop="name">模型部署优化</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>在视觉模型的 TensorRT INT8 部署实践中，量化带来的影响往往不止于 mAP 或 Top-1 准确率的轻微波动——更隐蔽也更棘手的问题是<strong>置信度（Score）分布偏移</strong>：整体分数偏高或偏低、灰区样本跨阈值翻转、检测框几何漂移叠加 NMS 连锁效应，都会导致线上原有置信度阈值失效。</p>
+<p>本文分别在**图像分类（Cls）<strong>与</strong>目标检测（Detect）**两个视觉任务上开展多组对比实验，涵盖业务数据集与开源标准数据集（<code>Food-101</code> 分类、<code>VOC0712</code> 检测），系统分析 <strong>PTQ</strong>、<strong>普通 QAT</strong> 与 <strong>量化感知蒸馏（QAD）</strong> 在精度、推理速度与 Score 分布一致性上的表现：</p>
+<ol>
+<li><strong>PTQ 阶段（Detect）</strong>：以典型业务检测模型为例，对比全量、仅 Backbone 和按敏感度选层的 PTQ，观察 INT8 量化对 Score 分布、阈值通过框数和推理延迟的影响；</li>
+<li><strong>业务数据 QAT 与 QAD 阶段（Cls &amp; Detect）</strong>：分别在业务分类（Cls）与业务检测（Detect）任务上评估普通 QAT 的局限，并验证以原始 FP32 模型为教师的 QAD 能否在全量 INT8 下将 Score 分布拉回；</li>
+<li><strong>开源基准对照阶段（Cls &amp; Detect）</strong>：在开源分类数据集 <code>Food-101</code>（Cls）与开源检测数据集 <code>VOC0712</code>（Detect）上做同口径对照，分析数据本身对量化偏移幅度的影响；</li>
+<li><strong>根因与选型总结</strong>：梳理 Score 偏移的五大核心根因、量化范围选型建议与各方案综合对比。</li>
+</ol>
+<hr>
+<h2 id="一、PTQ-带来的-Score-偏移"><a href="#一、PTQ-带来的-Score-偏移" class="headerlink" title="一、PTQ 带来的 Score 偏移"></a>一、PTQ 带来的 Score 偏移</h2><p>在 RTX 4090 + TensorRT环境下，常规卷积类检测与分类模型直接做全量 PTQ 通常可获得 <strong>1.9×–2.6×</strong> 推理加速，但普遍伴随 <strong>1.2–6.0 pp</strong> 的精度回退与明显的 Score 偏移；而旋转框（OBB）、Transformer 检测（RT-DETR）与关键点热图（HRNet）等结构直接全量 PTQ 时，则极易出现严重退化甚至量化失败。</p>
+<p>以典型业务检测模型为例，采用全量 INT8 Entropy PTQ 后，推理延迟从 <code>3.058 ms</code> 降到 <code>1.180 ms</code>（<code>2.59×</code>）。但在 <code>score ≥ 0.25</code> 的检测结果中，Score 中位数从 <code>0.8232</code> 升至 <code>0.9085</code>（<code>+0.0853</code>），通过阈值的框数增加 <code>4.1%</code>，原有阈值下的输出分布发生明显偏移。</p>
+<p>实测中主要观察到两类异常：<strong>分数偏差</strong>（同框分数差大于 <code>0.05</code> 或结果跨过业务阈值）与<strong>匹配框几何偏移</strong>（匹配框 IoU 低于 <code>0.90</code>）。框位置变化也会经 NMS 竞争进一步影响最终保留的框及其置信度。</p>
+<p>为观察缩小量化范围能否在零训练条件下缓解 Score 偏移，我们对比了三种 PTQ 策略：</p>
+<ul>
+<li><strong><code>full</code> PTQ（Entropy）</strong>：全量卷积插入 INT8 QDQ，速度最快，但偏移严重；</li>
+<li><strong><code>backbone-only</code> PTQ（MinMax）</strong>：仅对 Backbone 量化，强制保留 Neck 与 Detect Head 为 FP；</li>
+<li><strong><code>auto</code> PTQ（敏感度自动选层）</strong>：基于校准集按“输出归一化 RMSE &#x2F; 卷积权重数”对候选卷积组排序，在 <code>65%</code> 权重预算内自动挑选最不敏感的 <strong>31&#x2F;83 个卷积（覆盖 65.52% 权重）</strong> 做 INT8，自动跳过高敏感浅层、敏感 Neck 与 Detect Head。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>业务检测模型 PTQ 策略</th>
+<th>量化层覆盖</th>
+<th align="right">精度 &#x2F; 一致性表现（FP32 → QDQ）</th>
+<th align="right"><code>≥0.25</code> 检出数变化</th>
+<th>Score 分布偏移特征</th>
+<th align="right">Latency（ms）&#x2F; 加速比</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong><code>full</code> PTQ（Entropy）</strong></td>
+<td>全部 Conv</td>
+<td align="right">mAP50:95 <code>0.8071 → 0.7800</code>（<strong><code>-2.71 pp</code></strong>）</td>
+<td align="right"><code>+4.1%</code></td>
+<td>中位数暴涨 <strong><code>+0.0853</code></strong>（<code>0.8232 → 0.9085</code>），高分段明显右移</td>
+<td align="right"><code>3.058 → 1.180</code>（<code>2.59×</code>）</td>
+</tr>
+<tr>
+<td><strong><code>backbone-only</code> PTQ（MinMax）</strong></td>
+<td>仅 Backbone（39 Conv）</td>
+<td align="right">匹配率 <strong><code>99.95%</code></strong>，坐标 MAE <strong><code>0.173 px</code></strong>，Score MAE <strong><code>0.00114</code></strong></td>
+<td align="right"><strong><code>0.0%</code></strong></td>
+<td>中位数 <code>0.8232 → 0.8222</code>（<strong><code>-0.0010</code></strong>），<code>JSD = 0.00161</code></td>
+<td align="right"><code>3.071 → 1.360</code>（<strong><code>2.26×</code></strong> &#x2F; QPS <code>2.48×</code>）</td>
+</tr>
+<tr>
+<td><strong><code>auto</code> PTQ（65% 权重预算）</strong></td>
+<td>自动选 31&#x2F;83 Conv（65.5% 权重）</td>
+<td align="right">mAP50:95 <code>81.53% → 81.41%</code>（<strong>仅 <code>-0.12 pp</code></strong>）</td>
+<td align="right"><strong><code>0.0%</code></strong></td>
+<td>均值 <code>0.8663 → 0.8660</code>，中位数 <strong><code>0.9044 → 0.9043</code></strong>（<code>-0.0001</code>）</td>
+<td align="right"><code>3.072 → 1.298</code>（<strong><code>2.37×</code></strong> &#x2F; QPS <code>2.62×</code>）</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>注：表中各方案分别与各自的 FP32 基线对照，检出数和分数变化应在各行内纵向比较。</p>
+</blockquote>
+<p><img src="/images/%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2%E4%BC%98%E5%8C%96/PTQ%E3%80%81QAT%E4%B8%8EQAD%E5%AF%B9%E6%AF%94%E5%88%86%E6%9E%90/ptq_det_4way_comparison.png" alt="业务检测模型 PTQ 四路 Score 分布对比（score ≥ 0.25，归一化占比%）"></p>
+<p>可以看到，直接 <code>full</code> PTQ 的 Score 偏移主要源于误差在 Neck 与 Detect Head 被逐级放大。缩小 INT8 覆盖范围后，两种部分量化方案的 Score 分布曲线均紧贴 FP32 基线：<code>backbone-only</code> 的匹配率达 <code>99.95%</code>、加速比 <code>2.26×</code>；<code>auto</code> 方案在保持中位数几乎零变化（<code>-0.0001</code>）和极小精度损失（<code>-0.12 pp</code>）的同时，将加速比进一步提升至 <code>2.37×</code>（QPS <code>2.62×</code>）。</p>
+<hr>
+<h2 id="二、业务数据实验：从QAT-到-QAD"><a href="#二、业务数据实验：从QAT-到-QAD" class="headerlink" title="二、业务数据实验：从QAT 到 QAD"></a>二、业务数据实验：从QAT 到 QAD</h2><p>部分量化能在零训练前提下稳住分布，但牺牲了一部分全量 INT8 的极限吞吐。为了验证训练能否在<strong>保留全量 INT8 速度</strong>的同时恢复分数一致性，我们先在业务分类和业务检测任务上测试基于硬标注（GT）微调的普通 QAT，再用原始 FP32 模型作为教师，对业务检测模型开展量化感知蒸馏（QAD）。</p>
+<h3 id="2-1-普通-QAT-效果及局限（backbone-auto-full-范围策略对比）"><a href="#2-1-普通-QAT-效果及局限（backbone-auto-full-范围策略对比）" class="headerlink" title="2.1 普通 QAT 效果及局限（backbone &#x2F; auto &#x2F; full 范围策略对比）"></a>2.1 普通 QAT 效果及局限（<code>backbone</code> &#x2F; <code>auto</code> &#x2F; <code>full</code> 范围策略对比）</h3><h4 id="（1）业务分类模型的普通-QAT"><a href="#（1）业务分类模型的普通-QAT" class="headerlink" title="（1）业务分类模型的普通 QAT"></a>（1）业务分类模型的普通 QAT</h4><table>
+<thead>
+<tr>
+<th>数据集 Split</th>
+<th align="right">Top-1 准确率（FP32 → 普通 QAT）</th>
+<th align="right">逐图一致率</th>
+<th align="right">逐图 <code>score_mae</code></th>
+<th align="right">Top-1 Score 均值 &#x2F; 中位数（FP32 → QAT）</th>
+<th align="right">TRT延迟均值（加速比）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>val</code></td>
+<td align="right"><code>78.42% → 77.29%</code>（<code>-1.13 pp</code>）</td>
+<td align="right"><code>94.61%</code></td>
+<td align="right">–</td>
+<td align="right"><code>0.8497 / 0.9328</code> → <code>0.8575 / 0.9336</code></td>
+<td align="right"><code>1.009 → 0.437 ms</code>（<code>2.31×</code>）</td>
+</tr>
+<tr>
+<td><code>test</code>（难例集）</td>
+<td align="right"><code>48.15% → 45.15%</code>（<strong><code>-3.00 pp</code></strong>）</td>
+<td align="right"><strong><code>85.99%</code></strong></td>
+<td align="right"><strong><code>0.0903</code></strong></td>
+<td align="right"><code>0.7186 / 0.7283</code> → <code>0.7193 / 0.7345</code></td>
+<td align="right"><code>1.010 → 0.438 ms</code>（<code>2.31×</code>）</td>
+</tr>
+</tbody></table>
+<p><img src="/images/%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2%E4%BC%98%E5%8C%96/PTQ%E3%80%81QAT%E4%B8%8EQAD%E5%AF%B9%E6%AF%94%E5%88%86%E6%9E%90/qat_cls_test.png" alt="业务分类模型普通 QAT vs FP32 Score 分布对比（test 集，score ≥ 0.25）"></p>
+<p>在业务分类任务上，普通 QAT 虽获得了 <code>2.31×</code> 加速，但整体分数偏高（偏自信）；在存在域偏移和类别偏斜的难例 <code>test</code> 集上，Top-1 掉点达 <strong><code>-3.00 pp</code></strong>，约 <code>14%</code> 的样本发生类别翻转，逐图 <code>score_mae</code> 高达 <code>0.0903</code>。</p>
+<h4 id="（2）业务检测模型的普通-QAT-策略对比"><a href="#（2）业务检测模型的普通-QAT-策略对比" class="headerlink" title="（2）业务检测模型的普通 QAT 策略对比"></a>（2）业务检测模型的普通 QAT 策略对比</h4><p>在普通 QAT 阶段（基于硬 GT 损失微调），同样对比三种量化范围策略：<code>backbone</code>（仅量化 Backbone）、<code>auto</code>（基于梯度敏感度与有效比特预算自动搜索混合精度）、<code>full</code>（全量量化，仅 DFL&#x2F;最终输出留 FP32）：</p>
+<table>
+<thead>
+<tr>
+<th>QAT 范围策略</th>
+<th>同权重 INT8 vs FP32 分布（<code>≥0.25</code>）</th>
+<th>逐图最高分差中位数（<code>|Δ|&gt;0.05</code> 张数）</th>
+<th>精度表现（<code>mAP50-95</code>）</th>
+<th>推理性能（RTX 4090）</th>
+<th>局限性</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong><code>backbone</code> QAT</strong></td>
+<td>框数持平，均值 <code>0.7585 → 0.7578</code></td>
+<td><code>-0.000316</code>（16 张）</td>
+<td><code>70.59% → 70.24%</code>（<code>-0.35 pp</code>）</td>
+<td><code>799.8 QPS</code>（GPU P50 <code>1.25 ms</code>）</td>
+<td>分布很稳，但吞吐比全量 INT8 慢约 <strong>30%</strong></td>
+</tr>
+<tr>
+<td><strong><code>auto</code> QAT</strong></td>
+<td>框数略增，中位数 <code>0.8224 → 0.8223</code></td>
+<td><strong><code>-0.000123</code></strong>（<strong>0 张</strong>）</td>
+<td>val <code>0.6989</code>（未蒸馏）</td>
+<td>介于 <code>backbone</code> 与 <code>full</code> 之间</td>
+<td>逐图极稳，但需额外梯度搜索且速度不及 <code>full</code></td>
+</tr>
+<tr>
+<td><strong><code>full</code> 普通 QAT</strong></td>
+<td>灰区收缩，均值&#x2F;中位数右移（<code>0.7625/0.8206 → 0.7701/0.8288</code>）</td>
+<td>偏差明显</td>
+<td><code>0.6926</code>（坐标误差 <code>1.17 px</code>）</td>
+<td><strong><code>1,071.3 QPS</code></strong>（<code>2.02×</code>）</td>
+<td>速度最快，但硬 GT 微调导致偏自信与精度回退</td>
+</tr>
+</tbody></table>
+<p><img src="/images/%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2%E4%BC%98%E5%8C%96/PTQ%E3%80%81QAT%E4%B8%8EQAD%E5%AF%B9%E6%AF%94%E5%88%86%E6%9E%90/qat_det_4way_comparison.png" alt="业务检测模型普通 QAT 策略 Score 分布对比（score ≥ 0.25）"></p>
+<p><code>backbone</code> 与 <code>auto</code> 虽能保住同权重 INT8 与 FP32 的分数一致性，但牺牲了全量 INT8 的极限吞吐；而 <code>full</code> 普通 QAT 跑得最快，却出现分数整体右移、中低分灰区框收缩。由于业务训练数据中普遍存在一定比例的疑似漏标、松框或边界歧义标注，硬标签微调会在噪声标注上二次拟合，进一步拉扯决策面，因此后续改用 FP32 教师输出作为监督信号。</p>
+<h3 id="2-2-全量-QAD-的分数对齐"><a href="#2-2-全量-QAD-的分数对齐" class="headerlink" title="2.2 全量 QAD 的分数对齐"></a>2.2 全量 QAD 的分数对齐</h3><p>QAD 在保留<strong>全量 INT8 量化</strong>的前提下，于训练阶段直接对齐原始 FP32 教师的分类分数、回归分布与 Neck 特征：</p>
+<ul>
+<li><strong>三路前景加权对齐蒸馏</strong>：分类分支 <code>kd_cls</code>（<code>T=1</code> Bernoulli KL）+ 回归分支 <code>kd_dfl</code>（4 边分布 KL）+ Neck 3 层特征 <code>kd_feat</code>（相对 MSE）；分类与回归按前景权重 <code>w = max(p_teacher, p_student)^γ</code> 加权并以 <code>Σw</code> 归一化，避免被海量背景 anchor 稀释；</li>
+<li><strong>隔离脏标注（<code>task_weight=0</code>）</strong>：关闭硬 GT 任务损失，纯粹以 FP32 Teacher 为监督目标，避免对脏标二次拟合；</li>
+<li><strong>稳态量化配置（<code>max</code> 校准 + <code>unfused</code> + <code>bn=frozen</code>）</strong>：避免激进截断校准引入初始失真，不提前融合 Conv-BN 并冻结 BN 统计量，防止深层误差发散；</li>
+<li><strong>逐类 Logit 仿射校准</strong>：在验证集上按类别独立拟合 <code>z&#39;_c = a_c · z_c + b_c</code>，并真实折叠进分类头权重与 <code>amax</code>，推理零额外开销。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>模型 &#x2F; 演进版本（业务检测模型）</th>
+<th align="right"><code>mean</code> &#x2F; <code>median</code></th>
+<th align="right">Wasserstein（≥0.25）</th>
+<th align="right"><code>mAP50</code></th>
+<th align="right"><code>mAP50-95</code></th>
+<th align="right">匹配框 <code>score_mae</code></th>
+<th align="right">坐标 MAE</th>
+<th align="right">IoU≥0.90 匹配率</th>
+<th align="right"><code>trtexec</code> GPU &#x2F; QPS（加速比）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Original FP32（基线）</strong></td>
+<td align="right"><strong>0.7625 &#x2F; 0.8206</strong></td>
+<td align="right"><code>0.00000</code></td>
+<td align="right"><strong>0.9470</strong></td>
+<td align="right"><strong>0.7058</strong></td>
+<td align="right">–</td>
+<td align="right">–</td>
+<td align="right">–</td>
+<td align="right"><code>1.884 ms</code> &#x2F; <code>529.8</code>（<code>1.00×</code>）</td>
+</tr>
+<tr>
+<td>QAT INT8</td>
+<td align="right"><code>0.7701 / 0.8288</code></td>
+<td align="right">–</td>
+<td align="right"><code>0.9420</code></td>
+<td align="right"><code>0.6926</code></td>
+<td align="right">–</td>
+<td align="right"><code>1.17 px</code></td>
+<td align="right">–</td>
+<td align="right"><code>0.927 ms</code> &#x2F; <code>1,071.3</code>（<code>2.02×</code>）</td>
+</tr>
+<tr>
+<td>QAD（<code>T=2</code> + 全 GT + warmup）</td>
+<td align="right"><code>0.7730 / 0.8296</code></td>
+<td align="right"><code>0.01071</code></td>
+<td align="right"><code>0.9467</code></td>
+<td align="right"><code>0.7026</code></td>
+<td align="right">–</td>
+<td align="right">–</td>
+<td align="right">–</td>
+<td align="right"><code>0.868 ms</code> &#x2F; <code>1,148.2</code>（<code>2.16×</code>）</td>
+</tr>
+<tr>
+<td>QAD（<code>percentile 99.99 + fuse</code>）INT8</td>
+<td align="right"><code>0.7587 / 0.8256</code></td>
+<td align="right"><code>0.00657</code></td>
+<td align="right"><code>0.9467</code></td>
+<td align="right"><code>0.6940</code></td>
+<td align="right"><code>0.0226</code></td>
+<td align="right"><code>1.23 px</code></td>
+<td align="right"><code>95.06%</code></td>
+<td align="right"><code>0.944 ms</code> &#x2F; <code>1,055.0</code>（<code>1.99×</code>）</td>
+</tr>
+<tr>
+<td><strong>QAD（<code>max+unfused+bn=frozen</code>）INT8</strong></td>
+<td align="right"><strong>0.7603 &#x2F; 0.8177</strong></td>
+<td align="right"><strong><code>0.00262</code></strong></td>
+<td align="right"><strong><code>0.9464</code></strong></td>
+<td align="right"><strong><code>0.7039</code></strong></td>
+<td align="right"><strong><code>0.0150</code></strong></td>
+<td align="right"><strong><code>0.78 px</code></strong></td>
+<td align="right"><strong><code>97.12%</code></strong></td>
+<td align="right"><strong><code>0.867 ms</code> &#x2F; <code>1,148.8</code>（<code>2.17×</code>）</strong></td>
+</tr>
+</tbody></table>
+<p><img src="/images/%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2%E4%BC%98%E5%8C%96/PTQ%E3%80%81QAT%E4%B8%8EQAD%E5%AF%B9%E6%AF%94%E5%88%86%E6%9E%90/det_fp32_vs_qat_vs_qad_ge025.png" alt="业务检测模型 FP32 vs 普通 QAT vs QAD Score 分布对比（score ≥ 0.25）"></p>
+<p>最终版 QAD 在 <code>score ≥ 0.25</code> 区间与 FP32 的 Wasserstein 距离低至 <strong><code>0.00262</code></strong>（较初版 QAD 缩小 <strong>4.1×</strong>，较 <code>percentile + fuse</code> 缩小 <strong>2.5×</strong> 且推理快 <strong>8.9%</strong>）。在拿满全量 INT8 加速（<code>2.17×</code>、<code>1,148.8 QPS</code>）的同时，<code>mAP50-95</code> 仅下降 <code>0.19 pp</code>，框坐标误差压至 <code>0.78 px</code>，<code>IoU ≥ 0.90</code> 的高重合匹配率达到 <strong><code>97.12%</code></strong>。</p>
+<hr>
+<h2 id="三、开源标准数据集对照验证与数据本身对偏移的影响"><a href="#三、开源标准数据集对照验证与数据本身对偏移的影响" class="headerlink" title="三、开源标准数据集对照验证与数据本身对偏移的影响"></a>三、开源标准数据集对照验证与数据本身对偏移的影响</h2><p>为剥离业务标注噪声与域偏移干扰，验证上述 QAT 与 QAD 方案的通用上限，我们在标准开源数据集 <code>Food-101</code>（分类）与 <code>VOC0712</code>（检测）上开展同口径对照实验。</p>
+<h3 id="3-1-开源分类（Cls）：Food-101-ResNet18（101-类，25-250-test-图，448×448）"><a href="#3-1-开源分类（Cls）：Food-101-ResNet18（101-类，25-250-test-图，448×448）" class="headerlink" title="3.1 开源分类（Cls）：Food-101 ResNet18（101 类，25,250 test 图，448×448）"></a>3.1 开源分类（Cls）：Food-101 ResNet18（101 类，25,250 test 图，448×448）</h3><table>
+<thead>
+<tr>
+<th>模型形态</th>
+<th align="right">GT Top-1 准确率</th>
+<th align="right">逐图 Top-1 一致率（翻转数）</th>
+<th align="right">逐图 <code>score_mae</code></th>
+<th align="right"><code>score_p95</code></th>
+<th align="right">灰区 <code>[0.3, 0.9)</code> <code>mae</code> &#x2F; <code>bias</code></th>
+<th align="right">全局 <code>mean</code> &#x2F; <code>median</code></th>
+<th align="right">Wasserstein（vs FP32）</th>
+<th align="center"><code>trtexec</code> QPS（加速比）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Original FP32（基线）</strong></td>
+<td align="right"><strong>83.30%</strong></td>
+<td align="right"><code>100%</code>（0）</td>
+<td align="right"><code>0</code></td>
+<td align="right"><code>0</code></td>
+<td align="right">–</td>
+<td align="right"><strong>0.8552 &#x2F; 0.9856</strong></td>
+<td align="right"><code>0.00000</code></td>
+<td align="center"><code>1,653.2</code>（<code>1.00×</code>）</td>
+</tr>
+<tr>
+<td><strong>普通 QAT INT8（无蒸馏）</strong></td>
+<td align="right">81.54%（<strong><code>-1.76%</code></strong>）</td>
+<td align="right">89.50%（翻转 <strong>2,652</strong>）</td>
+<td align="right"><code>0.0683</code></td>
+<td align="right"><code>0.3174</code></td>
+<td align="right"><code>0.1613</code> &#x2F; <strong><code>+0.0286</code></strong></td>
+<td align="right">0.8602 &#x2F; 0.9876</td>
+<td align="right"><code>0.00501</code></td>
+<td align="center"><code>4,644.1</code>（<code>2.81×</code>）</td>
+</tr>
+<tr>
+<td><strong>QAD INT8（推荐）</strong></td>
+<td align="right"><strong>83.28%（仅 <code>-0.02%</code>）</strong></td>
+<td align="right"><strong>97.68%（仅翻转 587）</strong></td>
+<td align="right"><strong><code>0.0157</code></strong></td>
+<td align="right"><strong><code>0.0753</code></strong></td>
+<td align="right"><strong><code>0.0422</code> &#x2F; <code>+0.0014</code></strong></td>
+<td align="right"><strong>0.8556 &#x2F; 0.9854</strong></td>
+<td align="right"><strong><code>0.00076</code></strong></td>
+<td align="center"><strong><code>4,393.8</code>（<code>2.66×</code>）</strong></td>
+</tr>
+</tbody></table>
+<p><img src="/images/%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2%E4%BC%98%E5%8C%96/PTQ%E3%80%81QAT%E4%B8%8EQAD%E5%AF%B9%E6%AF%94%E5%88%86%E6%9E%90/food101_cls_score_ge025.png" alt="Food-101 ResNet18 Top-1 Score 分布对比（score ≥ 0.25）：蓝&#x3D;FP32，绿&#x3D;普通QAT，橙&#x3D;QAD"></p>
+<p>QAD 在保持 <code>2.66×</code> 加速的前提下，Top-1 准确率仅比 FP32 差 <code>0.02 pp</code>，<strong><code>score ≥ 0.8</code> 的 18,573 张图中实现 0 翻转</strong>，<code>score ≥ 0.90</code> 放行总量（<code>16,729</code>）完全一致，Wasserstein 距离低至 <strong><code>0.00076</code></strong>（较普通 QAT 缩小 <strong>6.6×</strong>）。</p>
+<h3 id="3-2-开源检测（Detect）：VOC0712-YOLOv8s（20-类，4-952-test-图，1280×1280）"><a href="#3-2-开源检测（Detect）：VOC0712-YOLOv8s（20-类，4-952-test-图，1280×1280）" class="headerlink" title="3.2 开源检测（Detect）：VOC0712 YOLOv8s（20 类，4,952 test 图，1280×1280）"></a>3.2 开源检测（Detect）：VOC0712 YOLOv8s（20 类，4,952 test 图，1280×1280）</h3><table>
+<thead>
+<tr>
+<th>评价维度</th>
+<th>指标</th>
+<th align="right">原始 FP32</th>
+<th align="right">QAT INT8</th>
+<th align="right">QAD INT8（最终版）</th>
+<th>QAD vs QAT</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>检测精度</strong></td>
+<td><code>mAP50</code> &#x2F; <code>mAP50-95</code></td>
+<td align="right"><code>73.548%</code> &#x2F; <code>45.886%</code></td>
+<td align="right"><code>73.173%</code> &#x2F; <code>45.708%</code></td>
+<td align="right"><strong><code>73.382%</code> &#x2F; <code>45.817%</code></strong></td>
+<td><code>mAP50-95</code> <code>+0.109 pp</code>（距 FP32 仅 <code>-0.069 pp</code>）</td>
+</tr>
+<tr>
+<td><strong>常用阈值区（≥0.25）</strong></td>
+<td>检出框数</td>
+<td align="right"><code>13,369</code></td>
+<td align="right"><code>13,273</code>（<code>-0.72%</code>）</td>
+<td align="right"><strong><code>13,345</code>（<code>-0.18%</code>）</strong></td>
+<td>框数偏差缩小 <strong>4.0×</strong></td>
+</tr>
+<tr>
+<td><strong>常用阈值区（≥0.25）</strong></td>
+<td>Score 均值 &#x2F; 中位数</td>
+<td align="right"><code>0.63431 / 0.67240</code></td>
+<td align="right"><code>0.64447 / 0.68680</code>（偏自信）</td>
+<td align="right"><strong><code>0.63319 / 0.67010</code></strong></td>
+<td>均值&#x2F;中位数误差缩小 <strong>9× &#x2F; 6×</strong></td>
+</tr>
+<tr>
+<td><strong>常用阈值区（≥0.25）</strong></td>
+<td><strong>Wasserstein 距离</strong></td>
+<td align="right"><code>0.000000</code></td>
+<td align="right"><code>0.010167</code></td>
+<td align="right"><strong><code>0.001417</code></strong></td>
+<td>分布距离缩小 <strong>7.2×</strong></td>
+</tr>
+<tr>
+<td><strong>全区间分布（≥0.01）</strong></td>
+<td>检出框数</td>
+<td align="right"><code>56,511</code></td>
+<td align="right"><code>51,280</code>（<strong><code>-9.26%</code></strong>）</td>
+<td align="right"><strong><code>57,231</code>（<code>+1.27%</code>）</strong></td>
+<td>消除低分框大幅塌缩</td>
+</tr>
+<tr>
+<td><strong>全区间分布（≥0.01）</strong></td>
+<td><strong>Wasserstein 距离</strong></td>
+<td align="right"><code>0.000000</code></td>
+<td align="right"><code>0.016558</code></td>
+<td align="right"><strong><code>0.002362</code></strong></td>
+<td>分布距离缩小 <strong>7.0×</strong></td>
+</tr>
+<tr>
+<td><strong>逐框一致性</strong></td>
+<td>IoU≥0.75 <code>score_mae</code> &#x2F; 坐标 MAE</td>
+<td align="right">基线</td>
+<td align="right"><code>0.04939</code> &#x2F; <code>1.96 px</code></td>
+<td align="right"><strong><code>0.02129</code> &#x2F; <code>0.93 px</code></strong></td>
+<td>误差缩小 <strong>2.3× &#x2F; 2.1×</strong></td>
+</tr>
+<tr>
+<td><strong>逐框一致性</strong></td>
+<td>IoU≥0.90 匹配框数（占比）</td>
+<td align="right"><code>13,369</code>（100%）</td>
+<td align="right"><code>11,115</code>（83.1%）</td>
+<td align="right"><strong><code>12,507</code>（93.6%）</strong></td>
+<td>高重合框增加 <strong>+1,392 个</strong></td>
+</tr>
+<tr>
+<td><strong>推理速度</strong></td>
+<td><code>trtexec</code> QPS &#x2F; 端到端全量耗时</td>
+<td align="right"><code>530.9</code> &#x2F; <code>8.510 s</code></td>
+<td align="right"><code>1,114.0</code> &#x2F; <code>3.766 s</code>（<code>2.26×</code>）</td>
+<td align="right"><strong><code>1,111.9</code> &#x2F; <code>3.751 s</code>（<code>2.27×</code>）</strong></td>
+<td>同速无额外开销</td>
+</tr>
+</tbody></table>
+<p><img src="/images/%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2%E4%BC%98%E5%8C%96/PTQ%E3%80%81QAT%E4%B8%8EQAD%E5%AF%B9%E6%AF%94%E5%88%86%E6%9E%90/voc0712_det_score_ge025.png" alt="VOC0712 YOLOv8s Score 分布对比（score ≥ 0.25）：蓝&#x3D;原始FP32，绿&#x3D;普通QAT，橙&#x3D;QAD"></p>
+<h3 id="3-3-数据本身对-Score-偏移的影响：业务数据集-vs-开源数据集"><a href="#3-3-数据本身对-Score-偏移的影响：业务数据集-vs-开源数据集" class="headerlink" title="3.3 数据本身对 Score 偏移的影响：业务数据集 vs 开源数据集"></a>3.3 数据本身对 Score 偏移的影响：业务数据集 vs 开源数据集</h3><p>将业务数据集与开源数据集横向对比，可以看到<strong>数据本身的特性显著决定了量化后 Score 偏移的幅度与拟合难度</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>任务与方案</th>
+<th>业务数据集实测</th>
+<th>开源数据集实测</th>
+<th>难度差异表现</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Cls · 普通 QAT</strong></td>
+<td>业务分类模型（<code>test</code>）：Top-1 <strong><code>-3.00 pp</code></strong>，一致率 <strong><code>85.99%</code></strong>，<code>score_mae = 0.0903</code></td>
+<td><code>Food-101</code>（<code>test</code>）：Top-1 <code>-1.76 pp</code>，一致率 <code>89.50%</code>，<code>score_mae = 0.0683</code></td>
+<td>业务集掉点多 <code>1.24 pp</code>，逐图分数误差高 <strong>32%</strong></td>
+</tr>
+<tr>
+<td><strong>Detect · QAD（≥0.25）</strong></td>
+<td>业务检测模型：Wasserstein &#x3D; <strong><code>0.00262</code></strong>，mAP50-95 <code>-0.19 pp</code></td>
+<td><code>VOC0712</code>（20 类）：Wasserstein &#x3D; <strong><code>0.00142</code></strong>，mAP50-95 <code>-0.069 pp</code></td>
+<td>业务数据分布距离是开源对照的 <strong>1.85×</strong></td>
+</tr>
+<tr>
+<td><strong>Detect · QAD（≥0.01）</strong></td>
+<td>业务检测模型：Wasserstein &#x3D; <strong><code>0.01872</code></strong>，框数 <code>+3.73%</code></td>
+<td><code>VOC0712</code>（20 类）：Wasserstein &#x3D; <strong><code>0.00236</code></strong>，框数 <code>+1.27%</code></td>
+<td>低分尾部业务集分布距离高达开源集的 <strong>7.9×</strong></td>
+</tr>
+</tbody></table>
+<p><strong>业务数据更难拟合分布的四大原因</strong>：</p>
+<ol>
+<li><strong>标注噪声（脏标&#x2F;松框&#x2F;漏标）</strong>：业务训练集往往包含一定比例的边界歧义标注，硬 GT 微调会不断拉扯决策面，迫使模型偏自信；而开源集标注干净一致，微调扰动小得多。</li>
+<li><strong>域偏移与类别偏斜导致灰区密集</strong>：开源 <code>Food-101</code> 超半数样本位于 <code>0.98–1.0</code> 饱和区（中位数 <code>0.9856</code>），logits 间隔大、对量化噪声天然不敏感；而业务分类测试集存在明显域偏移（中位数仅 <code>0.7283</code>），大量样本挤在 <code>[0.3, 0.8)</code> 灰区，微小量化误差即可触发翻转与大幅分数抖动。</li>
+<li><strong>复杂背景与密集重叠放大 NMS 扰动</strong>：目标密集或相互遮挡时，<code>[0.01, 0.50)</code> 低分候选密集，轻微 logit 误差经 Sigmoid 与 NMS 竞争后被放大，导致业务集低分尾部距离远高于开源集（<code>0.01872</code> vs <code>0.00236</code>）。</li>
+<li><strong>对校准截断与层融合更脆弱</strong>：在业务集上，<code>percentile 99.99</code> 截断与 <code>fuse=True</code> 提前去除 BN 极易诱发深层误差发散，容错空间远小于开源集。</li>
+</ol>
+<hr>
+<h2 id="四、根因分析、选型建议与方案对比"><a href="#四、根因分析、选型建议与方案对比" class="headerlink" title="四、根因分析、选型建议与方案对比"></a>四、根因分析、选型建议与方案对比</h2><h3 id="4-1-产生-Score-偏移的五大核心根因"><a href="#4-1-产生-Score-偏移的五大核心根因" class="headerlink" title="4.1 产生 Score 偏移的五大核心根因"></a>4.1 产生 Score 偏移的五大核心根因</h3><ol>
+<li><strong>多层量化误差逐级累积并在 Neck&#x2F;Head 放大（PTQ 主因）</strong>：中间层张量 SQNR 追踪显示，Detect Head 局部单层 QDQ 的 SQNR 仍有 <code>21–33 dB</code>、激活裁剪率 <code>&lt; 0.2%</code>，但全量 FP32↔QDQ 的 SQNR 在后段 Neck 与 Head 分类&#x2F;回归分支暴跌至 <strong><code>2.99–4.52 dB</code></strong>；上游噪声累积与回归框偏移经 NMS 连锁改变最终分数分布。</li>
+<li><strong>激进截断校准（<code>entropy</code> &#x2F; <code>percentile 99.99</code>）引入失真</strong>：0 步训练即让 <code>score_mae</code> 恶化约 2×、Wasserstein 恶化约 4×；QAT 训练时权重代偿抬升，会导致关闭量化器后 <code>QAT-FP32</code> 出现明显过冲。</li>
+<li><strong>Bias Warmup 破坏预训练校准</strong>：默认过高的 <code>warmup_bias_lr</code> 会在首轮直接打散分类头 bias，重训后模型已偏离原分数校准状态。</li>
+<li><strong>硬 0&#x2F;1 GT 二次拟合导致偏自信（普通 QAT 主因）</strong>：将灰区样本往 0&#x2F;1 两端推，造成中低分框收缩、类别翻转；若蒸馏按全 anchor 均匀平均，则容易被海量背景稀释而压不住 GT 损失。</li>
+<li><strong>BN 漂移、<code>fuse=True</code> 深层发散与选模缺口</strong>：未冻结 BN 会引起特征统计量飘移；<code>fuse=True</code> 移除 BN 后在训练中后段容易出现深层误差放大且 TRT 8.6 反而更慢（<code>8.9%</code>）；此外，仅按 mAP 选模无法感知 Score 分布偏移。</li>
+</ol>
+<h3 id="4-2-缓解策略与-backbone-auto-full-选型建议"><a href="#4-2-缓解策略与-backbone-auto-full-选型建议" class="headerlink" title="4.2 缓解策略与 backbone &#x2F; auto &#x2F; full 选型建议"></a>4.2 缓解策略与 <code>backbone</code> &#x2F; <code>auto</code> &#x2F; <code>full</code> 选型建议</h3><ul>
+<li><strong>无训练条件（仅做 PTQ）</strong>：<ul>
+<li>优先采用 <strong><code>auto</code> PTQ</strong>（按敏感度自动选层）：自动避开高敏感浅层与 Head，实测兼具 <code>2.37×</code> 加速与近零偏移（<code>mAP50:95</code> <code>-0.12 pp</code>，中位数误差 <code>-0.0001</code>）；</li>
+<li>若追求最简零搜索方案，可采用 <strong><code>backbone-only</code> MinMax PTQ</strong>（Neck&#x2F;Head 留 FP32），能彻底稳住分布，但会牺牲一部分推理加速比。</li>
+</ul>
+</li>
+<li><strong>有训练条件（可做 QAT &#x2F; QAD）</strong>：<ul>
+<li>优先采用 <strong><code>full</code> + QAD（三路前景加权蒸馏 + <code>task_weight=0</code> + <code>max/unfused/bn=frozen</code> + 逐类仿射校准）</strong>：无需为保分布而放弃 Neck&#x2F;Head 的 INT8 加速，可同时拉满全量 INT8 速度（<code>2.17×–2.66×</code>）与分布一致性；</li>
+<li>仅当极特殊架构（如 RT-DETR、HRNet、复杂 OBB）在全量 QAD 下仍难收敛时，再结合 <strong><code>auto</code> + QAD</strong> 做混合精度兜底。</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-3-PTQ、局部-混合-PTQ、普通-QAT-与-QAD-综合对比"><a href="#4-3-PTQ、局部-混合-PTQ、普通-QAT-与-QAD-综合对比" class="headerlink" title="4.3 PTQ、局部&#x2F;混合 PTQ、普通 QAT 与 QAD 综合对比"></a>4.3 PTQ、局部&#x2F;混合 PTQ、普通 QAT 与 QAD 综合对比</h3><table>
+<thead>
+<tr>
+<th>对比维度</th>
+<th>全量 PTQ</th>
+<th>局部&#x2F;混合 PTQ（<code>backbone</code> &#x2F; <code>auto</code>）</th>
+<th>普通 QAT（硬 GT 微调）</th>
+<th>QAD（全量蒸馏对齐）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>落地成本</strong></td>
+<td>极低（分钟级）</td>
+<td>极低（<code>auto</code> 需数分钟敏感度搜索）</td>
+<td>中（需带标注训练集微调）</td>
+<td>中（<strong>无需干净 GT</strong>，仅需图片 + FP32 Teacher）</td>
+</tr>
+<tr>
+<td><strong>推理加速（RTX 4090）</strong></td>
+<td><strong>高</strong>（<code>2.1×–2.6×</code>）</td>
+<td>中高（<code>auto</code> <code>2.37×</code>，<code>backbone</code> 受限）</td>
+<td><strong>高</strong>（<code>2.0×–2.8×</code>）</td>
+<td><strong>最高</strong>（<code>2.17×–2.66×</code>，<code>unfused</code> 比 <code>fuse</code> 更快 <code>8.9%</code>）</td>
+</tr>
+<tr>
+<td><strong>核心精度保真</strong></td>
+<td>差且不稳定（<code>-1.2~-6.0 pp</code> 或崩溃）</td>
+<td><strong>极佳</strong>（<code>auto</code> 仅 <code>-0.12 pp</code>）</td>
+<td>中等（Cls 易掉 <code>1.1–3.0 pp</code>）</td>
+<td><strong>极佳</strong>（Cls <code>-0.02 pp</code>，Detect <code>-0.07~-0.19 pp</code>）</td>
+</tr>
+<tr>
+<td><strong>Score 分布影响</strong></td>
+<td><strong>剧烈偏移</strong>（中位数可偏 <code>+0.085</code>）</td>
+<td><strong>几乎零偏移</strong>（中位数误差 <code>≤0.001</code>）</td>
+<td><strong>系统性偏自信</strong>（灰区右移、低分框萎缩）</td>
+<td><strong>有效阈值区拉回</strong>（<code>W=0.00076–0.00262</code>，缩小 4×–7×）</td>
+</tr>
+<tr>
+<td><strong>逐图&#x2F;逐框一致性</strong></td>
+<td>低</td>
+<td>高</td>
+<td>中低（Cls 翻转 5–14%，Detect IoU≥0.90 仅 83%）</td>
+<td><strong>极高</strong>（Cls <code>≥0.8</code> 零翻转，Detect IoU≥0.90 达 <code>93.6–97.1%</code>）</td>
+</tr>
+<tr>
+<td><strong>抗标注噪声能力</strong></td>
+<td>不依赖 GT</td>
+<td>不依赖 GT</td>
+<td>弱（易过拟合脏标）</td>
+<td><strong>极强</strong>（<code>task_weight=0</code> 隔离脏 GT）</td>
+</tr>
+</tbody></table>
+<h3 id="4-4-小结"><a href="#4-4-小结" class="headerlink" title="4.4 小结"></a>4.4 小结</h3><ul>
+<li><strong>PTQ</strong>：全量 INT8 速度最快，但容易带来显著的 Score 右移与阈值失效；通过 <code>auto</code> 敏感度选层或 <code>backbone-only</code> 收窄范围，可在零训练下显著缓解偏移。</li>
+<li><strong>QAT vs QAD</strong>：在含标注噪声或域偏移的实际场景中，普通 QAT 的硬 GT 微调容易导致偏自信与难例掉点；改用 FP32 Teacher 驱动的全量 QAD 后，可在保持全量 INT8 极限加速的同时，将有效阈值区（<code>score ≥ 0.25</code>）的 Score 分布拉回至与 FP32 千分位级一致。</li>
+<li><strong>评估建议</strong>：业务数据在低分尾部（<code>score ≥ 0.01</code>）的分布偏移显著大于开源干净数据集，量化上线前应结合实际使用的置信度阈值与 Score 分布指标（如 Wasserstein 距离、逐图&#x2F;逐框一致性）综合验收，而非仅看 mAP 或 Top-1。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%A8%A1%E5%9E%8B%E9%87%8F%E5%8C%96/" rel="tag"># 模型量化</a>
+              <a href="/tags/QAT/" rel="tag"># QAT</a>
+              <a href="/tags/PTQ/" rel="tag"># PTQ</a>
+              <a href="/tags/QAD/" rel="tag"># QAD</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2026/08/27/CUDA%E9%95%9C%E5%83%8F/" rel="prev" title="CUDA镜像">
+                  <i class="fa fa-angle-left"></i> CUDA镜像
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder"></span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/alexw914/hexo-blog" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>
